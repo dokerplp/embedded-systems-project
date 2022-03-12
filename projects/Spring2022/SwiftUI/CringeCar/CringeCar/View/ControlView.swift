@@ -9,7 +9,7 @@ import SwiftUI
 
 struct BorderView: View {
     
-    let size: Double
+    let size = ControlViewConstants.BORDER_SIZE
     
     var body: some View {
         Circle()
@@ -25,7 +25,7 @@ struct BorderView: View {
 
 struct StickView: View {
     
-    let size: Double
+    let size = ControlViewConstants.STICK_SIZE
     
     var body: some View {
         Circle()
@@ -34,57 +34,31 @@ struct StickView: View {
             )
             .frame(width: size, height: size)
     }
-    
 }
 
 struct ActionStickView: View {
     
-    let borderSize: Double
-    let stickSize: Double
-    
-    let maxRadius: Double
-    
-    init() {
-        self.borderSize = UIScreen.screenWidth * 0.4
-        self.stickSize = borderSize * 0.2
-        self.maxRadius = (borderSize - stickSize) / 2
-    }
-    
+    @Binding var car: Car
     @State var viewState = CGSize.zero
     
-    func getAngle(x: Double, y: Double) -> Double {
-        return atan2(y, x)
-    }
-    
-    func getDist(x: Double, y: Double) -> Double {
-        return sqrt(pow(abs(x), 2) + pow(abs(y), 2))
-    }
-    
-    func getWidth(dist: Double, angle: Double) -> Double {
-        let d = dist < maxRadius ? dist : maxRadius
-        return d * cos(angle)
-    }
-    
-    func getHeight(dist: Double, angle: Double) -> Double {
-        let d = dist < maxRadius ? dist : maxRadius
-        return d * sin(angle)
-    }
+    let mr = ControlViewConstants.MAX_RADIUS
  
     var body: some View {
-        BorderView(size: borderSize)
-        StickView(size: stickSize)
+        BorderView()
+        StickView()
             .offset(x: viewState.width, y: viewState.height)
             .gesture(
                 DragGesture().onChanged { value in
-                    
-                    let dist = getDist(x: value.translation.width, y: -1 * value.translation.height)
-                    let angle = getAngle(x: value.translation.width, y: value.translation.height)
-        
-                    viewState = CGSize(
-                        width: getWidth(dist: dist, angle: angle),
-                        height: getHeight(dist: dist, angle: angle)
-                    )
+                    var w = value.translation.width
+                    var h = value.translation.height
+                    let angle = atan2(w, h)
+                    var d = sqrt(pow(abs(w), 2) + pow(abs(-h), 2))
+                    d = d < mr ? d : mr
+                    w = d * sin(angle)
+                    h = d * cos(angle)
 
+                    viewState = CGSize (width: w, height: h)
+                    car.go(x: w, y: h)
                 }
                 .onEnded { value in
                     withAnimation(.spring()) {
@@ -95,7 +69,8 @@ struct ActionStickView: View {
     }
 }
 
-struct ButtonView: View {
+
+struct ControlVIew: View {
     
     @Binding var car: Car
     @State var viewState = CGSize.zero
@@ -106,27 +81,16 @@ struct ButtonView: View {
             VStack (alignment: .leading) {
                 Spacer()
                 ZStack {
-                    ActionStickView()
+                    ActionStickView(car: $car)
                 }
             }
         }
     }
 }
 
-struct ControlVIew: View {
-    
-    private var car = Binding.constant(Car())
-    
-    var body: some View {
-        
-        HStack {
-            ButtonView(car: car)
-        }
-    }
-}
-
 struct ControlVIew_Previews: PreviewProvider {
+    
     static var previews: some View {
-        ControlVIew()
+        ControlVIew(car: .constant(Car()))
     }
 }

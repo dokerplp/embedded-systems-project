@@ -7,19 +7,15 @@
 
 import Foundation
 
-struct pair {
-    let x: Int = 0
-    let y: Int = 0
-}
-
-struct Car {
-    var direction: pair
+class Car {
     
-    init() {
-        self.direction = pair()
+    func go(x: Double, y: Double) {
+        //TODO make car moving
     }
     
-    func go() {
+    func brake(force: Double) {
         
     }
+    
+    
 }
