@@ -92,5 +92,6 @@ struct ControlVIew_Previews: PreviewProvider {
     
     static var previews: some View {
         ControlVIew(car: .constant(Car()))
+            .previewInterfaceOrientation(.portraitUpsideDown)
     }
 }
