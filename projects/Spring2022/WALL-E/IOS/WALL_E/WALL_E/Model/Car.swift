@@ -1,8 +1,8 @@
 //
 //  Car.swift
-//  CringeCar
+//  WALL_E
 //
-//  Created by dokerplp on 3/10/22.
+//  Created by dokerplp on 4/24/22.
 //
 
 import Foundation
@@ -10,7 +10,7 @@ import Foundation
 class Car {
     
     func go(x: Double, y: Double) {
-        //TODO make car moving
+        print("\(x) \(y)")
     }
     
     func brake(force: Double) {

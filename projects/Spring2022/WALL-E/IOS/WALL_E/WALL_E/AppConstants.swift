@@ -1,8 +1,8 @@
 //
-//  Constants.swift
-//  CringeCar
+//  AppConstants.swift
+//  WALL_E
 //
-//  Created by dokerplp on 3/12/22.
+//  Created by dokerplp on 4/24/22.
 //
 
 import SwiftUI

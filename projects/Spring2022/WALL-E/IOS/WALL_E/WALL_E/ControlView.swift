@@ -1,8 +1,8 @@
 //
 //  ControlView.swift
-//  CringeCar
+//  WALL_E
 //
-//  Created by dokerplp on 3/10/22.
+//  Created by dokerplp on 4/24/22.
 //
 
 import SwiftUI
@@ -57,7 +57,9 @@ struct ActionStickView: View {
                     w = d * sin(angle)
                     h = d * cos(angle)
 
-                    viewState = CGSize (width: w, height: h)
+                    viewState = CGSize (width: w,
+                                        height: h)
+                    
                     car.go(x: w, y: h)
                 }
                 .onEnded { value in

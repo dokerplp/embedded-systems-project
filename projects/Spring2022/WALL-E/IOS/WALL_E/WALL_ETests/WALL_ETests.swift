@@ -1,14 +1,14 @@
 //
-//  CringeCarTests.swift
-//  CringeCarTests
+//  WALL_ETests.swift
+//  WALL_ETests
 //
-//  Created by dokerplp on 3/10/22.
+//  Created by dokerplp on 4/24/22.
 //
 
 import XCTest
-@testable import CringeCar
+@testable import WALL_E
 
-class CringeCarTests: XCTestCase {
+class WALL_ETests: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
