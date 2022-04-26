@@ -18,7 +18,7 @@ struct Direct: View {
                 Color.blue
             )
             .frame(width: 500, height: 100)
-            .overlay(Text("\(car.getX()) \(car.getY())")
+            .overlay(Text("Direction: \(car.getDirection()) Speed:  \(car.getSpeed())")
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .foregroundColor(Color.white))
