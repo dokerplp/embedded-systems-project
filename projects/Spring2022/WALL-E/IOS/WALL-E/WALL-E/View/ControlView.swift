@@ -1,8 +1,8 @@
 //
 //  ControlView.swift
-//  CringeCar
+//  WALL-E
 //
-//  Created by dokerplp on 3/10/22.
+//  Created by dokerplp on 4/26/22.
 //
 
 import SwiftUI
@@ -12,14 +12,21 @@ struct BorderView: View {
     let size = ControlViewConstants.BORDER_SIZE
     
     var body: some View {
-        Circle()
-            .stroke(lineWidth: 10)
-            .fill(
-                Color.gray
-                    .opacity(0.3)
-            )
+        ZStack {
+            Circle()
+                .fill(
+                    Color("BackgroundStick")
+                )
+                .frame(width: size, height: size)
+            Circle()
+                .stroke(lineWidth: 10)
+                .fill(
+                    Color("BorderStick")
+                )
             .frame(width: size, height: size)
+        }
         .padding()
+        
     }
 }
 
@@ -30,14 +37,14 @@ struct StickView: View {
     var body: some View {
         Circle()
             .fill(
-                Color.gray
+                Color("Stick")
             )
             .frame(width: size, height: size)
     }
 }
 
 struct ActionStickView: View {
-    
+
     @Binding var car: Car
     @State var viewState = CGSize.zero
     
@@ -58,7 +65,8 @@ struct ActionStickView: View {
                     h = d * cos(angle)
 
                     viewState = CGSize (width: w, height: h)
-                    car.go(x: w, y: h)
+                    
+                    car.go(x: w, y: -h)
                 }
                 .onEnded { value in
                     withAnimation(.spring()) {

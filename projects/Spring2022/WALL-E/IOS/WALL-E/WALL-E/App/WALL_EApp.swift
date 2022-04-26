@@ -1,14 +1,14 @@
 //
-//  CringeCarApp.swift
-//  CringeCar
+//  WALL_EApp.swift
+//  WALL-E
 //
-//  Created by dokerplp on 3/10/22.
+//  Created by dokerplp on 4/26/22.
 //
 
 import SwiftUI
 
 @main
-struct CringeCarApp: App {
+struct WALL_EApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
