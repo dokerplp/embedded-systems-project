@@ -10,6 +10,7 @@ public class Server {
 
     public Server(int port) throws IOException {
         serverSocket = new ServerSocket(port);
+        serverSocket.setSoTimeout(10000);
     }
 
     public void start() throws IOException {

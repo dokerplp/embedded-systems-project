@@ -14,6 +14,12 @@ struct Car {
     private var direction: Double
     private var speed: Double
     
+    private var counter = 0
+    mutating func isGo() -> Bool {
+        counter = (counter + 1) % 5
+        return counter == 0
+    }
+    
     public init(client: Client) {
         
         self.client = client
@@ -41,7 +47,9 @@ struct Car {
     mutating public func go(x: Double, y: Double) {
         setParam(x: x, y: y)
         
-        client.write(dir: direction, speed: speed)
+        if (isGo()) {
+            client.write(dir: direction, speed: speed)
+        }
     }
     
     public func brake(force: Double) {

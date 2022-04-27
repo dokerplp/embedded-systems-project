@@ -47,9 +47,9 @@ struct ActionStickView: View {
 
     @Binding var car: Car
     @State var viewState = CGSize.zero
-    
+        
     let mr = ControlViewConstants.MAX_RADIUS
- 
+     
     var body: some View {
         BorderView()
         StickView()
