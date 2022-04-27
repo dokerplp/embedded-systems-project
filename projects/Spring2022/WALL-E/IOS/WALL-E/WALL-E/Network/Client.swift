@@ -32,6 +32,13 @@ struct Client {
         if (client != nil) {
             let result = client!.send(data: data)
             print(result)
+            
+            guard let array = client!.read(4, timeout: 1) else { return; }
+            
+            let data = Data(_: array)
+            let value = UInt32(bigEndian: data.withUnsafeBytes { $0.load(as: UInt32.self) })
+            print(value)
+            
         } else {
             print("No connection")
             connect()
