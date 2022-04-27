@@ -19,7 +19,6 @@ struct Client {
             self.client = client
           case .failure(let error):
             print(error)
-            connect()
         }
     }
     
@@ -33,7 +32,6 @@ struct Client {
         if (client != nil) {
             let result = client!.send(data: data)
             print(result)
-            client?.close()
         } else {
             print("No connection")
             connect()

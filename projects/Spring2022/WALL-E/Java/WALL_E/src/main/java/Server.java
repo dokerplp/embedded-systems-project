@@ -1,23 +1,30 @@
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 
 public class Server {
+    private final ServerSocket serverSocket;
 
-    private static final int PORT = 2113;
+    public Server(int port) throws IOException {
+        serverSocket = new ServerSocket(port);
+    }
 
-    public static void main(String[] args) throws IOException {
-        try (
-                ServerSocket serverSocket = new ServerSocket(PORT);
-        ) {
-            while (true) {
-                try (
-                        Socket socket = serverSocket.accept();
-                        BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))
-                ) {
+    public void start() throws IOException {
+        while(true) {
+            try (Socket socket = serverSocket.accept()){
+                socket.setSoTimeout(1000);
+                try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))){
                     String s = in.readLine();
                     System.out.println(s);
                 }
+            } catch (SocketTimeoutException s) {
+                System.out.println("Connection time out!");
+            } catch (IOException e) {
+                e.printStackTrace();
+                break;
             }
         }
     }
