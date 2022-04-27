@@ -8,6 +8,6 @@
 import Foundation
 
 struct NetworkConstants {
-    static let HOST: String = "localhost"
+    static let HOST: String = "192.168.0.24"
     static let PORT: Int32 = 2113
 }

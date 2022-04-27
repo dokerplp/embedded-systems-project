@@ -26,13 +26,18 @@ struct Client {
     mutating func write(dir: Double, speed: Double) {
         let _dir = round(dir * 1000) / 1000
         let _speed = round(speed * 1000) / 1000
-        let data: Data = "\(_dir) \(_speed)".data(using: .utf8)!
+        
+        connect()
+        
+        let data: Data = "\(_dir) \(_speed)\r\n".data(using: .utf8)!
         if (client != nil) {
             let result = client!.send(data: data)
             print(result)
+            client?.close()
         } else {
             print("No connection")
             connect()
         }
+        
     }
 }
