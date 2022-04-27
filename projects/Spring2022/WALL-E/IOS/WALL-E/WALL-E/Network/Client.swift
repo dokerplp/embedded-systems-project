@@ -31,12 +31,11 @@ struct Client {
         let data: Data = "\(_dir) \(_speed)\r\n".data(using: .utf8)!
         if (client != nil) {
             let result = client!.send(data: data)
-            print(result)
-            
-            guard let array = client!.read(4, timeout: 1) else { return; }
+
+            guard let array = client!.read(1024*8, timeout: 1) else { return; }
             
             let data = Data(_: array)
-            let value = UInt32(bigEndian: data.withUnsafeBytes { $0.load(as: UInt32.self) })
+            let value = String(data: data, encoding: .utf8) ?? "null"
             print(value)
             
         } else {
