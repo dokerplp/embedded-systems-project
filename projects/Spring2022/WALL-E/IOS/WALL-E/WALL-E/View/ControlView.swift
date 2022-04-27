@@ -47,9 +47,9 @@ struct ActionStickView: View {
 
     @Binding var car: Car
     @State var viewState = CGSize.zero
-    
+        
     let mr = ControlViewConstants.MAX_RADIUS
- 
+     
     var body: some View {
         BorderView()
         StickView()
@@ -98,8 +98,13 @@ struct ControlVIew: View {
 
 struct ControlVIew_Previews: PreviewProvider {
     
+
+    
     static var previews: some View {
-        ControlVIew(car: .constant(Car()))
+        
+        let client = Client()
+        
+        ControlVIew(car: .constant(Car(client: client)))
             .previewInterfaceOrientation(.portraitUpsideDown)
     }
 }
