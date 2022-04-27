@@ -98,8 +98,13 @@ struct ControlVIew: View {
 
 struct ControlVIew_Previews: PreviewProvider {
     
+
+    
     static var previews: some View {
-        ControlVIew(car: .constant(Car()))
+        
+        let client = Client()
+        
+        ControlVIew(car: .constant(Car(client: client)))
             .previewInterfaceOrientation(.portraitUpsideDown)
     }
 }
