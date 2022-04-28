@@ -8,24 +8,15 @@
 import Foundation
 
 struct Car {
-    
-    private var client: Client
-    
-    private var direction: Double
-    private var speed: Double
+        
+    private var direction: Double = 0
+    private var speed: Double = 0
     
     private var counter = 0
-    mutating func isGo() -> Bool {
+    
+    mutating public func isGo() -> Bool {
         counter = (counter + 1) % 5
         return counter == 0
-    }
-    
-    public init(client: Client) {
-        
-        self.client = client
-        
-        self.direction = 0
-        self.speed = 0
     }
     
     public func getDirection() -> Double {
@@ -46,10 +37,6 @@ struct Car {
     
     mutating public func go(x: Double, y: Double) {
         setParam(x: x, y: y)
-        
-        if (isGo()) {
-            client.write(dir: direction, speed: speed)
-        }
     }
     
     public func brake(force: Double) {

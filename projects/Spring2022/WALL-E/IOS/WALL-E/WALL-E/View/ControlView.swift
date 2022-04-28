@@ -45,6 +45,7 @@ struct StickView: View {
 
 struct ActionStickView: View {
 
+    @Binding var client: Client
     @Binding var car: Car
     @State var viewState = CGSize.zero
         
@@ -67,6 +68,9 @@ struct ActionStickView: View {
                     viewState = CGSize (width: w, height: h)
                     
                     car.go(x: w, y: -h)
+                    if (car.isGo()) {
+                        client.write(dir: car.getDirection(), speed: car.getSpeed())
+                    }
                 }
                 .onEnded { value in
                     withAnimation(.spring()) {
@@ -80,6 +84,7 @@ struct ActionStickView: View {
 
 struct ControlVIew: View {
     
+    @Binding var client: Client
     @Binding var car: Car
     @State var viewState = CGSize.zero
     
@@ -89,7 +94,7 @@ struct ControlVIew: View {
             VStack (alignment: .leading) {
                 Spacer()
                 ZStack {
-                    ActionStickView(car: $car)
+                    ActionStickView(client: $client, car: $car)
                 }
             }
         }
@@ -101,10 +106,7 @@ struct ControlVIew_Previews: PreviewProvider {
 
     
     static var previews: some View {
-        
-        let client = Client()
-        
-        ControlVIew(car: .constant(Car(client: client)))
+        ControlVIew(client: .constant(Client()), car: .constant(Car()))
             .previewInterfaceOrientation(.portraitUpsideDown)
     }
 }
