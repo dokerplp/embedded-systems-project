@@ -178,3 +178,4 @@ dkms.conf
 *.exe
 *.out
 *.app
+/projects/Spring2022/WALL-E/RPiServer/.idea/
