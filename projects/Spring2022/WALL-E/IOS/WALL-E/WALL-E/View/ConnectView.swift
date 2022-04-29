@@ -10,7 +10,7 @@ import SwiftUI
 
 
 struct CustomFieldStyle: TextFieldStyle {
-    func _body(configuration: TextField<Self._Label>) -> some View {
+    public func _body(configuration: TextField<Self._Label>) -> some View {
         configuration
             .padding(10)
             .background(Color.gray)
@@ -20,8 +20,8 @@ struct CustomFieldStyle: TextFieldStyle {
 }
 
 struct DataView: View {
-    @Binding var host: String
-    @Binding var port: String
+    @Binding public var host: String
+    @Binding public var port: String
     
     var body: some View {
         VStack {
@@ -47,9 +47,9 @@ struct DataView: View {
 
 struct ButtonView: View {
     
-    @Binding var host: String
-    @Binding var port: String
-    @Binding var client: Client
+    @Binding public var host: String
+    @Binding public var port: String
+    @Binding public var client: Client
     
     var body: some View {
         Button(
@@ -78,9 +78,9 @@ struct ButtonView: View {
 
 struct ConnectView: View {
     
-    @Binding var client: Client
-    @Binding var host: String
-    @Binding var port: String
+    @Binding public var client: Client
+    @Binding public var host: String
+    @Binding public var port: String
     
     var body: some View {
         VStack {

@@ -14,11 +14,11 @@ struct Client {
     private var port: Int32 = 0
     private var client: TCPClient?
     
-    func isConnected() -> Bool {
+    public func isConnected() -> Bool {
         return client != nil
     }
     
-    mutating func connect(host: String, port: Int32) {
+    mutating public func connect(host: String, port: Int32) {
         self.host = host
         self.port = port
     
@@ -33,7 +33,7 @@ struct Client {
         }
     }
     
-    mutating func write(dir: Double, speed: Double) -> String? {
+    mutating public func write(dir: Double, speed: Double) -> String? {
         let _dir = round(dir * 1000) / 1000
         let _speed = round(speed * 1000) / 1000
             
@@ -42,18 +42,17 @@ struct Client {
         
         let data: Data = "\(_dir) \(_speed)\r\n".data(using: .utf8)!
         
-        if client != nil {
-            let result = client!.send(data: data)
-            print(result)
-            
-            guard let array = client!.read(1024*8, timeout: 1) else { return nil }
-            let data = Data(_: array)
-            
-            return String(data: data, encoding: .utf8)
-            
-        } else {
+        guard client != nil else {
             print("No connection")
             return nil
         }
+        
+        let result = client!.send(data: data)
+        print(result)
+        
+        guard let array = client!.read(1024*8, timeout: 1) else { return nil }
+        let ans = Data(_: array)
+        
+        return String(data: ans, encoding: .utf8)
     }
 }

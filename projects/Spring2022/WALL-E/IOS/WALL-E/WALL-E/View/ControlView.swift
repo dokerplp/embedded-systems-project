@@ -9,11 +9,11 @@ import SwiftUI
 
 struct ControlVIew: View {
     
-    @Binding var client: Client
-    @Binding var car: Car
-    @Binding var settings: Settings
+    @Binding public var client: Client
+    @Binding public var car: Car
+    @Binding public var settings: Settings
     
-    @State var viewState = CGSize.zero
+    @State private var viewState = CGSize.zero
     
     var body: some View {
         HStack {
