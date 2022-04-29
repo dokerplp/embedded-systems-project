@@ -15,9 +15,9 @@ struct Video: View {
     
     var body: some View {
         VideoPlayer(player: player)
-                        .onAppear() {
-                                player = AVPlayer(url: URL(string: videoUrl)!)
-                        }
+            .onAppear() {
+                player = AVPlayer(url: URL(string: videoUrl)!)
+            }
     }
 }
 
@@ -26,17 +26,19 @@ struct ContentView: View {
     @State private var host = "192.168.0.24"
     @State private var port = "2113"
     @State private var player = AVPlayer()
-    @State private var videoUrl: String = "https://bit.ly/3vzeFIJ"
+    @State private var videoUrl: String = "https://bit.ly/3OQ0ruC"
     
     @State var client: Client = Client()
     @State var car: Car = Car()
+    @State var settings: Settings = Settings()
     
     var body: some View {
         ZStack {
             Color.black
+                .edgesIgnoringSafeArea(.all)
             if (client.isConnected()) {
                 Video(player: $player, videoUrl: $videoUrl)
-                ControlVIew(client: $client, car: $car)
+                ControlVIew(client: $client, car: $car, settings: $settings)
             } else {
                 ConnectView(client: $client, host: $host, port: $port)
             }

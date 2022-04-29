@@ -25,7 +25,9 @@ public class Server {
                     String s = in.readLine();
                     System.out.println(s);
 
-                    String msg = "2113";
+                    long battery1 = Math.round(Math.random() * 100);
+                    long battery2 = Math.round(Math.random() * 100);
+                    String msg = battery1 + " " + battery2;
 
                     outStream.write(msg.getBytes(StandardCharsets.UTF_8));
                     outStream.flush();

@@ -54,10 +54,8 @@ struct ButtonView: View {
     var body: some View {
         Button(
             action: {
-                let p = Int32(port) ?? -1
-                if (p != -1) {
-                    client.connect(host: host, port: p)
-                }
+                guard let p = Int32(port) else {return}
+                client.connect(host: host, port: p)
             }
         ) {
             Circle()

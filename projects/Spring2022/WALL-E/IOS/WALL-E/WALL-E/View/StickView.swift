@@ -1,0 +1,97 @@
+//
+//  StickView.swift
+//  WALL-E
+//
+//  Created by dokerplp on 4/29/22.
+//
+
+import Foundation
+import SwiftUI
+
+struct BorderView: View {
+    let size = ControlViewConstants.BORDER_SIZE
+    var body: some View {
+        ZStack {
+            Circle()
+                .fill(
+                    Color("BackgroundStick")
+                )
+                .frame(width: size, height: size)
+            Circle()
+                .stroke(lineWidth: 10)
+                .fill(
+                    Color("BorderStick")
+                )
+            .frame(width: size, height: size)
+        }
+        .padding()
+    }
+}
+
+struct StickView: View {
+    let size = ControlViewConstants.STICK_SIZE
+    var body: some View {
+        Circle()
+            .fill(
+                Color("Stick")
+            )
+            .frame(width: size, height: size)
+    }
+}
+
+struct ActionStickView: View {
+
+    let mr = ControlViewConstants.MAX_RADIUS
+
+    @State var viewState = CGSize.zero
+
+    @Binding var client: Client
+    @Binding var car: Car
+    @Binding var settings: Settings
+    
+    func getPower(charge: String) -> Int32 {
+        guard let battery = Int32(charge) else { return -1 }
+        return battery > 100 ? 100 : battery < 0 ? 0 : battery
+    }
+    
+    func onChanged(w: Double, h: Double) {
+        let angle = atan2(w, h)
+        var d = sqrt(pow(abs(w), 2) + pow(abs(-h), 2))
+        d = d < mr ? d : mr
+        let w = d * sin(angle)
+        let h = d * cos(angle)
+
+        viewState = CGSize (width: w, height: h)
+        
+        car.setParam(x: w, y: -h)
+        
+        if (car.isGo()) {
+            guard let power = client.write(dir: car.getDirection(), speed: car.getSpeed()) else {return}
+            let batteries = power.components(separatedBy: " ")
+            let charge1 = getPower(charge: batteries[0])
+            let charge2 = getPower(charge: batteries[1])
+            
+            settings.battery1 = charge1 != -1 ? charge1 : settings.battery1
+            settings.battery2 = charge2 != -1 ? charge2 : settings.battery1
+        }
+    }
+    
+    
+    var body: some View {
+        ZStack {
+            BorderView()
+            StickView()
+                .offset(x: viewState.width, y: viewState.height)
+                .gesture(
+                    DragGesture().onChanged { value in
+                        onChanged(w: value.translation.width, h: value.translation.height)
+                    }
+                    .onEnded { value in
+                        withAnimation(.spring()) {
+                            viewState = .zero
+                        }
+                    }
+                )
+        }
+    }
+}
