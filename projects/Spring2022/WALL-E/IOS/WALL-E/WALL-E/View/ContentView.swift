@@ -8,28 +8,40 @@
 import SwiftUI
 import AVKit
 
+struct Video: View {
+    
+    @Binding public var player: AVPlayer
+    @Binding public var videoUrl: String
+    
+    var body: some View {
+        VideoPlayer(player: player)
+            .onAppear() {
+                player = AVPlayer(url: URL(string: videoUrl)!)
+            }
+    }
+}
+
 struct ContentView: View {
     
-    @State var player = AVPlayer()
-    let videoUrl: String = "https://vkvd148.mycdn.me/video.m3u8?cmd=videoPlayerCdn&expires=1651239686613&srcIp=188.243.183.252&srcAg=SAFARI_MAC&ms=45.136.21.150&mid=1399293093983&type=4&sig=RbgEKwruQQE&ct=8&urls=185.226.53.204&clientType=13&id=665679628895"
+    @State private var host = "192.168.0.24"
+    @State private var port = "2113"
+    @State private var player = AVPlayer()
+    @State private var videoUrl: String = "https://bit.ly/3OQ0ruC"
     
-    var client: Client
-    @State var car: Car
-    init () {
-        self.client = Client()
-        self.car = Car(client: self.client)
-        
-        client.connect()
-    }
-    
+    @State private var client: Client = Client()
+    @State private var car: Car = Car()
+    @State private var settings: Settings = Settings()
     
     var body: some View {
         ZStack {
-            VideoPlayer(player: player)
-                            .onAppear() {
-                                    player = AVPlayer(url: URL(string: videoUrl)!)
-                            }
-            ControlVIew(car: $car)
+            Color.black
+                .edgesIgnoringSafeArea(.all)
+            if (client.isConnected()) {
+                Video(player: $player, videoUrl: $videoUrl)
+                ControlVIew(client: $client, car: $car, settings: $settings)
+            } else {
+                ConnectView(client: $client, host: $host, port: $port)
+            }
         }
     }
 }

@@ -20,13 +20,17 @@ public class Server {
                 socket.setSoTimeout(1000);
                 try (
                         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                        DataOutputStream daos = new DataOutputStream(socket.getOutputStream())
+                        OutputStream outStream = socket.getOutputStream();
                 ){
                     String s = in.readLine();
                     System.out.println(s);
 
-                    daos.writeInt(2113);
-                    daos.flush();
+                    long battery1 = Math.round(Math.random() * 100);
+                    long battery2 = Math.round(Math.random() * 100);
+                    String msg = battery1 + " " + battery2;
+
+                    outStream.write(msg.getBytes(StandardCharsets.UTF_8));
+                    outStream.flush();
                 }
             } catch (SocketTimeoutException s) {
                 System.out.println("Connection time out!");
