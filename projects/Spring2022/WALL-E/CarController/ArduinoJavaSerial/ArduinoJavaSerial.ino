@@ -10,14 +10,15 @@ void setup()
   delay(5000);
 }
 
-String in;
+String input;
+
 
 void loop()
 {
-          if (Serial.available())
-          {
-              in = Serial.readStringUntil('s');
-              esc.writeMicroseconds(in.toInt());
-              Serial.println(in);
-          }
+  if (Serial.available())
+  {
+    input = Serial.readStringUntil('s');
+    esc.writeMicroseconds(in.toInt());
+    Serial.println(input);
+  }
 }
