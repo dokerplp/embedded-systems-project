@@ -9,40 +9,38 @@ import Foundation
 import SwiftUI
 
 struct BorderView: View {
-    let size = ControlViewConstants.BORDER_SIZE
+    
     var body: some View {
         ZStack {
             Circle()
                 .fill(
                     Color("BackgroundStick")
                 )
-                .frame(width: size, height: size)
+                .frame(width: ControlViewConstants.BORDER_SIZE, height: ControlViewConstants.BORDER_SIZE)
             Circle()
                 .stroke(lineWidth: 10)
                 .fill(
                     Color("BorderStick")
                 )
-            .frame(width: size, height: size)
+            .frame(width: ControlViewConstants.BORDER_SIZE, height: ControlViewConstants.BORDER_SIZE)
         }
         .padding()
     }
 }
 
 struct StickView: View {
-    let size = ControlViewConstants.STICK_SIZE
+
     var body: some View {
         Circle()
             .fill(
                 Color("Stick")
             )
-            .frame(width: size, height: size)
+            .frame(width: ControlViewConstants.BORDER_SIZE, height: ControlViewConstants.BORDER_SIZE)
     }
 }
 
 struct ActionStickView: View {
-
-    let mr = ControlViewConstants.MAX_RADIUS
-
+    
     @State var viewState = CGSize.zero
 
     @Binding var client: Client
@@ -57,7 +55,7 @@ struct ActionStickView: View {
     func onChanged(w: Double, h: Double) {
         let angle = atan2(w, h)
         var d = sqrt(pow(abs(w), 2) + pow(abs(-h), 2))
-        d = d < mr ? d : mr
+        d = d < ControlViewConstants.MAX_RADIUS ? d : ControlViewConstants.MAX_RADIUS
         let w = d * sin(angle)
         let h = d * cos(angle)
 

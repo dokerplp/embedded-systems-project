@@ -10,8 +10,8 @@ import AVKit
 
 struct Video: View {
     
-    @Binding var player: AVPlayer
-    @Binding var videoUrl: String
+    @Binding public var player: AVPlayer
+    @Binding public var videoUrl: String
     
     var body: some View {
         VideoPlayer(player: player)
@@ -28,9 +28,9 @@ struct ContentView: View {
     @State private var player = AVPlayer()
     @State private var videoUrl: String = "https://bit.ly/3OQ0ruC"
     
-    @State var client: Client = Client()
-    @State var car: Car = Car()
-    @State var settings: Settings = Settings()
+    @State private var client: Client = Client()
+    @State private var car: Car = Car()
+    @State private var settings: Settings = Settings()
     
     var body: some View {
         ZStack {

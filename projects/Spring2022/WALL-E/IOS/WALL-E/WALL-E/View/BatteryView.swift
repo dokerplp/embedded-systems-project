@@ -10,7 +10,7 @@ import SwiftUI
 
 struct OneBatteryView: View {
     
-    @Binding var battery: Int32
+    @Binding public var battery: Int32
     
     var body: some View {
         Image(systemName: "battery.100")
@@ -34,7 +34,7 @@ struct OneBatteryView: View {
 
 struct BatteryView: View {
     
-    @Binding var settings: Settings
+    @Binding public var settings: Settings
     
     var body: some View {
         VStack {

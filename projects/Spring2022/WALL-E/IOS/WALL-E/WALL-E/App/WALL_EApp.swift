@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 @main
 struct WALL_EApp: App {
     var body: some Scene {
