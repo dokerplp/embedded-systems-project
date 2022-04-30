@@ -25,7 +25,7 @@ struct Client {
         
         let client = TCPClient(address: host, port: port)
         
-        switch client.connect(timeout: 10) {
+        switch client.connect(timeout: 2) {
           case .success:
             self.client = client
           case .failure(let error):

@@ -20,7 +20,7 @@ struct OneBatteryView: View {
                     battery > 20 ? Color.yellow :
                     Color.red
             )
-            .frame(width: 90, height: 45)
+            .frame(width: 100, height: 50)
             .overlay(
                 Text("\(battery) %")
                     .font(.subheadline)

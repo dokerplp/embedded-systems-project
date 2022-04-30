@@ -7,14 +7,12 @@
 
 import SwiftUI
 
-struct ControlVIew: View {
+struct ControlView: View {
     
     @Binding public var client: Client
     @Binding public var car: Car
     @Binding public var settings: Settings
-    
-    @State private var viewState = CGSize.zero
-    
+        
     var body: some View {
         HStack {
             VStack {
@@ -33,9 +31,9 @@ struct ControlVIew: View {
 }
 
 
-struct ControlVIew_Previews: PreviewProvider {
+struct ControlView_Previews: PreviewProvider {
     static var previews: some View {
-        ControlVIew(client: .constant(Client()), car: .constant(Car()), settings: .constant(Settings()))
+        ControlView(client: .constant(Client()), car: .constant(Car()), settings: .constant(Settings()))
             .previewInterfaceOrientation(.landscapeLeft)
     }
 }

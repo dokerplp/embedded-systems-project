@@ -18,3 +18,7 @@ struct ControlViewConstants {
     public static let STICK_SIZE = BORDER_SIZE * 0.2
     public static let MAX_RADIUS = (BORDER_SIZE - STICK_SIZE) / 2
 }
+
+struct CarConstants {
+    public static let WHEEL_SIZE = ControlViewConstants.BORDER_SIZE * 0.1
+}

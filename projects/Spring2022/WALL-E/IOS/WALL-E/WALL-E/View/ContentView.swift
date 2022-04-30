@@ -38,7 +38,7 @@ struct ContentView: View {
                 .edgesIgnoringSafeArea(.all)
             if (client.isConnected()) {
                 Video(player: $player, videoUrl: $videoUrl)
-                ControlVIew(client: $client, car: $car, settings: $settings)
+                CarControlView(client: $client, car: $car, settings: $settings)
             } else {
                 ConnectView(client: $client, host: $host, port: $port)
             }
