@@ -23,7 +23,7 @@ struct Video: View {
 
 struct ContentView: View {
     
-    @State private var host = "192.168.0.24"
+    @State private var host = "172.20.10.2"
     @State private var port = "2113"
     @State private var player = AVPlayer()
     @State private var videoUrl: String = "https://bit.ly/3OQ0ruC"

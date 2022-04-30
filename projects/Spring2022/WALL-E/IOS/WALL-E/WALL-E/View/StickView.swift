@@ -35,7 +35,7 @@ struct StickView: View {
             .fill(
                 Color("Stick")
             )
-            .frame(width: ControlViewConstants.BORDER_SIZE, height: ControlViewConstants.BORDER_SIZE)
+            .frame(width: ControlViewConstants.STICK_SIZE, height: ControlViewConstants.STICK_SIZE)
     }
 }
 
@@ -63,15 +63,13 @@ struct ActionStickView: View {
         
         car.setParam(x: w, y: -h)
         
-        if (car.isGo()) {
-            guard let power = client.write(dir: car.getDirection(), speed: car.getSpeed()) else {return}
-            let batteries = power.components(separatedBy: " ")
-            let charge1 = getPower(charge: batteries[0])
-            let charge2 = getPower(charge: batteries[1])
-            
-            settings.battery1 = charge1 != -1 ? charge1 : settings.battery1
-            settings.battery2 = charge2 != -1 ? charge2 : settings.battery1
-        }
+        guard let power = client.write(dir: car.getDirection(), speed: car.getSpeed()) else { return }
+        let batteries = power.components(separatedBy: " ")
+        let charge1 = getPower(charge: batteries[0])
+        let charge2 = getPower(charge: batteries[1])
+        
+        settings.battery1 = charge1 != -1 ? charge1 : settings.battery1
+        settings.battery2 = charge2 != -1 ? charge2 : settings.battery1
     }
     
     
@@ -82,7 +80,9 @@ struct ActionStickView: View {
                 .offset(x: viewState.width, y: viewState.height)
                 .gesture(
                     DragGesture().onChanged { value in
-                        onChanged(w: value.translation.width, h: value.translation.height)
+                        DispatchQueue.global(qos: .background).async {
+                            onChanged(w: value.translation.width, h: value.translation.height)
+                        }
                     }
                     .onEnded { value in
                         withAnimation(.spring()) {
