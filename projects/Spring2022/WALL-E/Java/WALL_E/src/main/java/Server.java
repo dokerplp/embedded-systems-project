@@ -11,6 +11,7 @@ public class Server {
 
     public Server(int port) throws IOException {
         serverSocket = new ServerSocket(port);
+        serverSocket.setSoTimeout(1000);
     }
     public void start() {
         try (
@@ -18,8 +19,8 @@ public class Server {
                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 OutputStream outStream = socket.getOutputStream();
         ) {
-
             //log car connected
+            socket.setSoTimeout(10000);
 
             while (true) {
                 try {
@@ -34,12 +35,12 @@ public class Server {
                     outStream.write(msg.getBytes(StandardCharsets.UTF_8));
                     outStream.flush();
                 } catch (IOException e) {
-                    //log
-                    start();
+                    throw new IOException(e);
                 }
             }
         } catch (IOException e) {
-            //log
+            System.out.println("close");
+            start();
         }
     }
 }

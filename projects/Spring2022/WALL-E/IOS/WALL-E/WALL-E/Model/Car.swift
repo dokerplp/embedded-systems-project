@@ -28,4 +28,9 @@ struct Car {
         self.direction = _x
     }
     
+    mutating public func setCarParam(x: Double, y: Double) {
+        self.direction = x
+        self.speed = y
+    }
+    
 }

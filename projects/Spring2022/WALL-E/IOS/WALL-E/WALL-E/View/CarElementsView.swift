@@ -194,6 +194,7 @@ struct BrakeLines: Shape {
 }
 
 struct BrakePedalView: View {
+    
     var body: some View {
         ZStack {
             BrakePedal()
@@ -205,6 +206,54 @@ struct BrakePedalView: View {
                 .frame(width: ControlViewConstants.BORDER_SIZE * 0.5, height: ControlViewConstants.BORDER_SIZE * 0.53)
             
         }
+    }
+}
+
+struct CircleWithLetter: View {
+    
+    let color: Color
+    let letter: String
+    
+    var body: some View {
+            
+        Circle()
+            .fill(color)
+            .overlay(
+                Text(letter)
+                    .font(.largeTitle)
+                    .fontWeight(.black)
+                    .foregroundColor(Color.white)
+            )
+        
+    }
+}
+
+struct TransmissionView: View {
+    
+    @Binding var transmission: TransmissionType
+    
+    struct TransmissionType: OptionSet {
+        let rawValue: Int
+        
+        static let drive = TransmissionType(rawValue: 1)
+        static let reverse = TransmissionType(rawValue: 2)
+        static let parking = TransmissionType(rawValue: 3)
+
+        static let all: TransmissionType = [.drive, .parking, .reverse]
+    }
+    
+    var body: some View {
+        VStack {
+            switch transmission {
+            case .drive:
+                CircleWithLetter(color: .green, letter: "D")
+            case .reverse:
+                CircleWithLetter(color: .red, letter: "R")
+            default:
+                CircleWithLetter(color: .blue, letter: "P")
+            }
+        }
+        .frame(width: 100, height: 100)
     }
 }
 
