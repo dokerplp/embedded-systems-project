@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct ControlView: View {
-    
     @Binding public var client: Client
     @Binding public var car: Car
     @Binding public var settings: Settings

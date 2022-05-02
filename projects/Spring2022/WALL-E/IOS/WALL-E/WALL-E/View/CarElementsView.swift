@@ -9,8 +9,7 @@ import Foundation
 import SwiftUI
 
 struct CustomCircle: Shape {
-
-    let radius: Double
+    public let radius: Double
     
     func path(in rect: CGRect) -> Path {
         Path { path in
@@ -21,7 +20,6 @@ struct CustomCircle: Shape {
 
 struct Triangle: Shape {
     func path(in rect: CGRect) -> Path {
-        
         Path { path in
             let s = CarConstants.WHEEL_SIZE / 2
             let r = rect.maxX
@@ -47,7 +45,6 @@ struct Triangle: Shape {
 }
 
 struct WheelView: View {
-
     var body: some View {
         ZStack {
             Triangle()
@@ -194,7 +191,6 @@ struct BrakeLines: Shape {
 }
 
 struct BrakePedalView: View {
-    
     var body: some View {
         ZStack {
             BrakePedal()
@@ -211,18 +207,24 @@ struct BrakePedalView: View {
 
 struct CircleWithLetter: View {
     
-    let color: Color
-    let letter: String
+    public let color: Color
+    public let letter: String
     
     var body: some View {
             
         Circle()
             .fill(color)
             .overlay(
-                Text(letter)
-                    .font(.largeTitle)
-                    .fontWeight(.black)
-                    .foregroundColor(Color.white)
+                Circle()
+                    .stroke(lineWidth: 2)
+                    .fill(
+                        Color("BorderStick")
+                    ).overlay(
+                        Text(letter)
+                            .font(.largeTitle)
+                            .fontWeight(.black)
+                            .foregroundColor(Color.white)
+                    )
             )
         
     }
@@ -230,7 +232,7 @@ struct CircleWithLetter: View {
 
 struct TransmissionView: View {
     
-    @Binding var transmission: TransmissionType
+    @Binding public var transmission: TransmissionType
     
     struct TransmissionType: OptionSet {
         let rawValue: Int
@@ -260,7 +262,6 @@ struct TransmissionView: View {
 
 struct CarElementsView: View {
     var body: some View {
-        
         HStack {
             VStack {
                 Spacer()
@@ -274,6 +275,7 @@ struct CarElementsView: View {
             }
             Spacer()
             VStack {
+                TransmissionView(transmission: .constant(.drive))
                 Spacer()
                 WheelView()
                     .padding()

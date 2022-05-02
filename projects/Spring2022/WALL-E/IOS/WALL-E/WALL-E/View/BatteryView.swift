@@ -27,13 +27,11 @@ struct OneBatteryView: View {
                     .fontWeight(.black)
                     .foregroundColor(Color.white)
                     .padding()
-                    
             )
     }
 }
 
 struct BatteryView: View {
-    
     @Binding public var settings: Settings
     
     var body: some View {

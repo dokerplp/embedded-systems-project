@@ -12,8 +12,7 @@ struct Client {
         
     private var host: String = ""
     private var port: Int32 = 0
-    var client: TCPClient? = nil
-    
+    private var client: TCPClient? = nil
     
     public func isConnected() -> Bool {
         return client != nil
@@ -46,6 +45,7 @@ struct Client {
         }
 
         let result = client!.send(data: data)
+        
         if (result.isFailure) {
             self.client = nil
             print(result)

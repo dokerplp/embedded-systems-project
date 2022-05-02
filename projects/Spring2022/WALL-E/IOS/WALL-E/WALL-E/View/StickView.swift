@@ -9,7 +9,6 @@ import Foundation
 import SwiftUI
 
 struct BorderView: View {
-    
     var body: some View {
         ZStack {
             Circle()
@@ -29,7 +28,6 @@ struct BorderView: View {
 }
 
 struct StickView: View {
-
     var body: some View {
         Circle()
             .fill(
@@ -40,7 +38,6 @@ struct StickView: View {
 }
 
 struct ActionStickView: View {
-    
     @State var viewState = CGSize.zero
 
     @Binding var client: Client
