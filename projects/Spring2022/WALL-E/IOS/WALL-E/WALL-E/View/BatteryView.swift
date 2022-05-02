@@ -20,7 +20,7 @@ struct OneBatteryView: View {
                     battery > 20 ? Color.yellow :
                     Color.red
             )
-            .frame(width: 100, height: 50)
+            .frame(width: BatteryViewConstants.BATTERY_WIDTH, height: BatteryViewConstants.BATTERY_HEIGHT)
             .overlay(
                 Text("\(battery) %")
                     .font(.subheadline)
@@ -39,6 +39,6 @@ struct BatteryView: View {
             OneBatteryView(battery: $settings.battery1)
             OneBatteryView(battery: $settings.battery2)
         }
-        .padding()
+    
     }
 }

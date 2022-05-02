@@ -21,7 +21,7 @@ struct CustomCircle: Shape {
 struct Triangle: Shape {
     func path(in rect: CGRect) -> Path {
         Path { path in
-            let s = CarConstants.WHEEL_SIZE / 2
+            let s = CarControlViewConstants.WHEEL_SIZE / 2
             let r = rect.maxX
             path.move(to: CGPoint(x: rect.midX - s, y: rect.midY - s))
             path.addLine(to: CGPoint(x: r * 0.2, y: r * 0.28))
@@ -52,10 +52,10 @@ struct WheelView: View {
                 .frame(width: ControlViewConstants.BORDER_SIZE, height: ControlViewConstants.BORDER_SIZE)
             
             CustomCircle(radius: ControlViewConstants.MAX_RADIUS)
-                .stroke(Color("WheelBorder"), lineWidth: CarConstants.WHEEL_SIZE)
+                .stroke(Color("WheelBorder"), lineWidth: CarControlViewConstants.WHEEL_SIZE)
 
             
-            CustomCircle(radius: CarConstants.WHEEL_SIZE * 0.75)
+            CustomCircle(radius: CarControlViewConstants.WHEEL_SIZE * 0.75)
                 .fill(Color("WheelBorder"))
             }
         .frame(width: ControlViewConstants.BORDER_SIZE, height: ControlViewConstants.BORDER_SIZE)
@@ -255,7 +255,7 @@ struct TransmissionView: View {
                 CircleWithLetter(color: .blue, letter: "P")
             }
         }
-        .frame(width: 100, height: 100)
+        .frame(width: CarControlViewConstants.TRANSMISSION_SIZE, height: CarControlViewConstants.TRANSMISSION_SIZE)
     }
 }
 
@@ -284,47 +284,3 @@ struct SpeedometerView: View {
             )
     }
 }
-
-
-struct CarElementsView: View {
-    var body: some View {
-        HStack {
-            VStack {
-                Spacer()
-                GazPedalView()
-                    .padding()
-            }
-            VStack {
-                Spacer()
-                BrakePedalView()
-                    .padding()
-            }
-            Spacer()
-            
-            VStack {
-                SpeedometerView(speed: .constant(200))
-                    .frame(width: 150, height: 150)
-                Spacer()
-            }
-            
-            Spacer()
-            
-            VStack {
-                TransmissionView(transmission: .constant(.drive))
-                Spacer()
-                WheelView()
-                    .padding()
-            }
-    
-        }
-     
-    }
-}
-
-struct CarElementsView_Previews: PreviewProvider {
-    static var previews: some View {
-        CarElementsView()
-            .previewInterfaceOrientation(.landscapeLeft)
-    }
-}
-

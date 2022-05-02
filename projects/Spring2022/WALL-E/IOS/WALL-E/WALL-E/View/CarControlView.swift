@@ -182,7 +182,7 @@ struct ActionSpeedometerView: View {
     
     var body: some View {
         SpeedometerView(speed: $speed)
-            .frame(width: 150, height: 150)
+            .frame(width: CarControlViewConstants.SPEEDOMETER_SIZE, height: CarControlViewConstants.SPEEDOMETER_SIZE)
             .padding()
     }
 }
