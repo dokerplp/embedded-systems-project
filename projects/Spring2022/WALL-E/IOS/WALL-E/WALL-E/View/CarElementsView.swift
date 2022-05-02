@@ -216,7 +216,7 @@ struct CircleWithLetter: View {
             .fill(color)
             .overlay(
                 Circle()
-                    .stroke(lineWidth: 2)
+                    .stroke(lineWidth: 5)
                     .fill(
                         Color("BorderStick")
                     ).overlay(
@@ -259,6 +259,32 @@ struct TransmissionView: View {
     }
 }
 
+struct SpeedometerView: View {
+    
+    @Binding var speed: Double
+    
+    var body: some View {
+        Circle()
+            .fill(
+                Color.gray
+            )
+            .overlay(
+                Circle()
+                    .stroke(lineWidth: 10)
+                    .fill(
+                        Color("WheelBorder")
+                    )
+            )
+            .overlay(
+                Text("\(Int(speed))\nmph")
+                    .font(.largeTitle)
+                    .fontWeight(.heavy)
+                    .foregroundColor(Color.white)
+                    .multilineTextAlignment(.center)
+            )
+    }
+}
+
 
 struct CarElementsView: View {
     var body: some View {
@@ -274,6 +300,15 @@ struct CarElementsView: View {
                     .padding()
             }
             Spacer()
+            
+            VStack {
+                SpeedometerView(speed: .constant(200))
+                    .frame(width: 150, height: 150)
+                Spacer()
+            }
+            
+            Spacer()
+            
             VStack {
                 TransmissionView(transmission: .constant(.drive))
                 Spacer()

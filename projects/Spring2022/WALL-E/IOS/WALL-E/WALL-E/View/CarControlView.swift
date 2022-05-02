@@ -116,16 +116,19 @@ struct ActionTransmissionView: View {
 struct ActionPedalsView: View {
 
     @Binding public var speed: Double
+    @Binding public var transmission: TransmissionView.TransmissionType
     
     @State private var timer: Timer?
     @State private var isLongPressing = false
     
     func changeSpeed(i: Int) {
-        self.isLongPressing = true
-        self.timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { _ in
-            let s = self.speed + Double(i)
-            self.speed = s > 100 ? 100 : s < 0 ? 0 : s
-        })
+        if (transmission != .parking) {
+            self.isLongPressing = true
+            self.timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { _ in
+                let s = self.speed + Double(i)
+                self.speed = s > 100 ? 100 : s < 0 ? 0 : s
+            })
+        }
     }
     
     var body: some View {
@@ -173,6 +176,28 @@ struct ActionPedalsView: View {
     }
 }
 
+struct ActionSpeedometerView: View {
+    
+    @Binding var speed: Double
+    
+    var body: some View {
+        SpeedometerView(speed: $speed)
+            .frame(width: 150, height: 150)
+            .padding()
+    }
+}
+
+struct ActionBatteryView: View {
+    
+    @Binding public var settings: Settings
+    
+    var body: some View {
+        BatteryView(settings: $settings)
+            .padding()
+    }
+    
+}
+
 struct CarControlView: View {
     
     @Binding public var client: Client
@@ -185,34 +210,32 @@ struct CarControlView: View {
     @State private var decreaseTimer: Timer?
     
     var body: some View {
-        
-        HStack {
-            VStack {
-                HStack {
-                    BatteryView(settings: $settings)
-                        .padding()
-                    Spacer()
-                }
+        VStack {
+            HStack {
+                ActionBatteryView(settings: $settings)
                 Spacer()
-                ActionPedalsView(speed: $speed)
+                ActionSpeedometerView(speed: $speed)
+                Spacer()
+                ActionTransmissionView(speed: $speed, transmission: $transmission)
             }
             Spacer()
-            VStack {
-                HStack {
+            HStack {
+                VStack {
                     Spacer()
-                    ActionTransmissionView(speed: $speed, transmission: $transmission)
+                    ActionPedalsView(speed: $speed, transmission: $transmission)
                 }
-                Spacer()
-                HStack {
+                VStack {
                     Spacer()
                     ActionWheelView(client: $client, car: $car, settings: $settings, speed: $speed, transmission: $transmission)
                 }
             }
         }
         .onLoad {
-            print("load")
+            self.decreaseTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { _ in
+                let s = self.speed + Double(-1)
+                self.speed = s > 100 ? 100 : s < 0 ? 0 : s
+            })
         }
-    
     }
 }
 
