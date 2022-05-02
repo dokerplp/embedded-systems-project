@@ -25,21 +25,40 @@ struct ActionWheelView: View {
         guard let battery = Int32(charge) else { return -1 }
         return battery > 100 ? 100 : battery < 0 ? 0 : battery
     }
-    
-    func onChanged(sx: Double, sy: Double, x: Double, y: Double, speed: Double, transmission: TransmissionView.TransmissionType) {
+        
+    func calcRotate(sx: Double, sy: Double, x: Double, y: Double) -> Double {
         let _x = x - ControlViewConstants.BORDER_SIZE / 2
         let _y = y - ControlViewConstants.BORDER_SIZE / 2
         
         let _sx = sx - ControlViewConstants.BORDER_SIZE / 2
         let _sy = sy - ControlViewConstants.BORDER_SIZE / 2
-        
+    
         let angle = atan2(_y, _x) * 180 / Double.pi
         let sangle = atan2(_sy, _sx) * 180 / Double.pi
+    
+        
+        print("\(angle) \(sangle)")
         
         let rotate = angle - sangle
+        
+        if (sangle < -70 && angle > 70) {
+            return rotate - 360
+        } else if (angle < -70 && sangle > 70) {
+            return rotate + 360
+        } else {
+            return rotate
+        }
+    }
+    
+    func onChanged(sx: Double, sy: Double, x: Double, y: Double, speed: Double, transmission: TransmissionView.TransmissionType) {
+        
+        let rotate = calcRotate(sx: sx, sy: sy, x: x, y: y)
+        
         let speed = transmission == .reverse ? -speed :
         transmission == .parking ? 0.0 : speed
-    
+        
+        print(rotate)
+        
         if (rotate >= -100 && rotate <= 100) {
             viewState.width = rotate
         }
@@ -163,6 +182,8 @@ struct CarControlView: View {
     @State private var transmission: TransmissionView.TransmissionType = .drive
     @State private var speed: Double = 0.0
     
+    @State private var decreaseTimer: Timer?
+    
     var body: some View {
         
         HStack {
@@ -188,7 +209,10 @@ struct CarControlView: View {
                 }
             }
         }
-     
+        .onLoad {
+            print("load")
+        }
+    
     }
 }
 
