@@ -8,7 +8,6 @@
 import Foundation
 import SwiftUI
 
-
 struct CustomFieldStyle: TextFieldStyle {
     public func _body(configuration: TextField<Self._Label>) -> some View {
         configuration
@@ -40,13 +39,11 @@ struct DataView: View {
             .textFieldStyle(
                 CustomFieldStyle()
             )
-    
-            .frame(width: ScreenConstants.SCREEN_WIDTH * 0.9)
+            .frame(width: ConnectViewConstants.DATA_FIELD_SIZE)
     }
 }
 
 struct ButtonView: View {
-    
     @Binding public var host: String
     @Binding public var port: String
     @Binding public var client: Client
@@ -62,7 +59,7 @@ struct ButtonView: View {
                 .fill(
                     Color.green
                 )
-                .frame(width: 150, height: 150)
+                .frame(width: ConnectViewConstants.BUTTON_SIZE, height: ConnectViewConstants.BUTTON_SIZE)
                 .overlay(
                     Text("Connect")
                         .font(.largeTitle)
@@ -77,7 +74,6 @@ struct ButtonView: View {
 }
 
 struct ConnectView: View {
-    
     @Binding public var client: Client
     @Binding public var host: String
     @Binding public var port: String

@@ -11,13 +11,7 @@ struct Car {
         
     private var direction: Double = 0
     private var speed: Double = 0
-    private var counter = 0
-    
-    mutating public func isGo() -> Bool {
-        counter = (counter + 1) % 5
-        return counter == 0
-    }
-    
+   
     public func getDirection() -> Double {
         return direction
     }
@@ -32,6 +26,11 @@ struct Car {
         
         self.speed = sqrt(_x * _x + _y * _y)
         self.direction = _x
+    }
+    
+    mutating public func setCarParam(x: Double, y: Double) {
+        self.direction = x
+        self.speed = y
     }
     
 }

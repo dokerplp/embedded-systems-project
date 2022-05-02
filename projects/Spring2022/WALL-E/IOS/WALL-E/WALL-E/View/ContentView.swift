@@ -9,7 +9,6 @@ import SwiftUI
 import AVKit
 
 struct Video: View {
-    
     @Binding public var player: AVPlayer
     @Binding public var videoUrl: String
     
@@ -22,7 +21,6 @@ struct Video: View {
 }
 
 struct ContentView: View {
-    
     @State private var host = "192.168.0.24"
     @State private var port = "2113"
     @State private var player = AVPlayer()
@@ -38,7 +36,7 @@ struct ContentView: View {
                 .edgesIgnoringSafeArea(.all)
             if (client.isConnected()) {
                 Video(player: $player, videoUrl: $videoUrl)
-                ControlVIew(client: $client, car: $car, settings: $settings)
+                CarControlView(client: $client, car: $car, settings: $settings)
             } else {
                 ConnectView(client: $client, host: $host, port: $port)
             }

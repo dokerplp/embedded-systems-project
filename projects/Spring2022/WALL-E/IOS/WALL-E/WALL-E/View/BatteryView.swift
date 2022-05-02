@@ -20,20 +20,18 @@ struct OneBatteryView: View {
                     battery > 20 ? Color.yellow :
                     Color.red
             )
-            .frame(width: 90, height: 45)
+            .frame(width: BatteryViewConstants.BATTERY_WIDTH, height: BatteryViewConstants.BATTERY_HEIGHT)
             .overlay(
                 Text("\(battery) %")
                     .font(.subheadline)
                     .fontWeight(.black)
                     .foregroundColor(Color.white)
                     .padding()
-                    
             )
     }
 }
 
 struct BatteryView: View {
-    
     @Binding public var settings: Settings
     
     var body: some View {
@@ -41,6 +39,6 @@ struct BatteryView: View {
             OneBatteryView(battery: $settings.battery1)
             OneBatteryView(battery: $settings.battery2)
         }
-        .padding()
+    
     }
 }

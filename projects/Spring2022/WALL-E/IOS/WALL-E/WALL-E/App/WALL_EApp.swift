@@ -12,6 +12,9 @@ struct WALL_EApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                
         }
     }
+    
+    
 }
