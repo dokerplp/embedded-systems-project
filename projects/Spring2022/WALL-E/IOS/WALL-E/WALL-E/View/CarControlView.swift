@@ -36,9 +36,6 @@ struct ActionWheelView: View {
         let angle = atan2(_y, _x) * 180 / Double.pi
         let sangle = atan2(_sy, _sx) * 180 / Double.pi
     
-        
-        print("\(angle) \(sangle)")
-        
         let rotate = angle - sangle
         
         if (sangle < -70 && angle > 70) {
@@ -56,8 +53,6 @@ struct ActionWheelView: View {
         
         let speed = transmission == .reverse ? -speed :
         transmission == .parking ? 0.0 : speed
-        
-        print(rotate)
         
         if (rotate >= -100 && rotate <= 100) {
             viewState.width = rotate
@@ -144,6 +139,7 @@ struct ActionPedalsView: View {
                     }, label: {
                         GazPedalView()
                             .padding()
+                            
                     }
                 )
                 .simultaneousGesture(

@@ -23,8 +23,8 @@ struct OneBatteryView: View {
             .frame(width: BatteryViewConstants.BATTERY_WIDTH, height: BatteryViewConstants.BATTERY_HEIGHT)
             .overlay(
                 Text("\(battery) %")
-                    .font(.subheadline)
-                    .fontWeight(.black)
+                    .font(.title)
+                    .fontWeight(.bold)
                     .foregroundColor(Color.white)
                     .padding()
             )
