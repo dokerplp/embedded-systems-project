@@ -117,11 +117,12 @@ struct GazPedalView: View {
         ZStack {
             GazPedal()
                 .fill(Color("WheelBorder"))
-                .frame(width: ControlViewConstants.BORDER_SIZE * 0.5, height: ControlViewConstants.BORDER_SIZE * 0.3)
+                .frame(width: CarControlViewConstants.GAZ_PEDAL_WIDTH, height: CarControlViewConstants.GAZ_PEDAL_HEIGHT, alignment: .top)
+        
             GazLines()
-                .stroke(style: StrokeStyle(lineWidth: ControlViewConstants.BORDER_SIZE * 0.02, lineCap: .round))
+                .stroke(style: StrokeStyle(lineWidth: CarControlViewConstants.LINE_WIDTH, lineCap: .round))
                 .foregroundColor(Color("WheelTriangle"))
-                .frame(width: ControlViewConstants.BORDER_SIZE * 0.5, height: ControlViewConstants.BORDER_SIZE * 0.3)
+                .frame(width: CarControlViewConstants.GAZ_PEDAL_WIDTH, height: CarControlViewConstants.GAZ_PEDAL_HEIGHT, alignment: .top)
         }
     }
 }
@@ -195,11 +196,11 @@ struct BrakePedalView: View {
         ZStack {
             BrakePedal()
                 .fill(Color("WheelBorder"))
-                .frame(width: ControlViewConstants.BORDER_SIZE * 0.5, height: ControlViewConstants.BORDER_SIZE * 0.53)
+                .frame(width: CarControlViewConstants.BREAK_PEDAL_WIDTH, height: CarControlViewConstants.BREAK_PEDAL_HEIGHT)
             BrakeLines()
-                .stroke(style: StrokeStyle(lineWidth: ControlViewConstants.BORDER_SIZE * 0.02, lineCap: .round))
+                .stroke(style: StrokeStyle(lineWidth: CarControlViewConstants.LINE_WIDTH, lineCap: .round))
                 .foregroundColor(Color("WheelTriangle"))
-                .frame(width: ControlViewConstants.BORDER_SIZE * 0.5, height: ControlViewConstants.BORDER_SIZE * 0.53)
+                .frame(width: CarControlViewConstants.BREAK_PEDAL_WIDTH, height: CarControlViewConstants.BREAK_PEDAL_HEIGHT)
             
         }
     }
@@ -221,8 +222,8 @@ struct CircleWithLetter: View {
                         Color("BorderStick")
                     ).overlay(
                         Text(letter)
-                            .font(.largeTitle)
-                            .fontWeight(.black)
+                            .font(.title)
+                            .fontWeight(.bold)
                             .foregroundColor(Color.white)
                     )
             )
@@ -270,15 +271,15 @@ struct SpeedometerView: View {
             )
             .overlay(
                 Circle()
-                    .stroke(lineWidth: 10)
+                    .stroke(lineWidth: 5)
                     .fill(
                         Color("WheelBorder")
                     )
             )
             .overlay(
                 Text("\(Int(speed))\nmph")
-                    .font(.largeTitle)
-                    .fontWeight(.heavy)
+                    .font(.title)
+                    .fontWeight(.bold)
                     .foregroundColor(Color.white)
                     .multilineTextAlignment(.center)
             )
