@@ -179,3 +179,4 @@ dkms.conf
 *.out
 *.app
 /projects/Spring2022/WALL-E/RPiServer/.idea/
+/projects/Spring2022/WALL-E/RPiServer/logs/
