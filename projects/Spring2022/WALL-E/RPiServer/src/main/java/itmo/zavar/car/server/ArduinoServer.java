@@ -95,10 +95,6 @@ public final class ArduinoServer implements Runnable {
         logger.info("Server was interrupted");
     }
 
-    private void connectToArduino() {
-
-    }
-
     private void setCarValues(String input) {
         String TERMINATOR = "s";
         arduino.setComPortTimeouts(SerialPort.TIMEOUT_SCANNER, 0, 0);
