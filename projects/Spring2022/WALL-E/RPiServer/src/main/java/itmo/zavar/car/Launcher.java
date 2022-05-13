@@ -8,7 +8,7 @@ import java.util.concurrent.Executors;
 
 public class Launcher {
     public static void main(String[] args) throws InterruptedException, IOException {
-        ArduinoServer arduinoServer = new ArduinoServer("COM4", 115200, 25565);
+        ArduinoServer arduinoServer = new ArduinoServer(args[0], 115200, 25565);
         Executor executor = Executors.newSingleThreadExecutor();
         executor.execute(arduinoServer);
     }

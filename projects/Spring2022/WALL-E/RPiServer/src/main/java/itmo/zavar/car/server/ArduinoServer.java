@@ -18,7 +18,6 @@ public final class ArduinoServer implements Runnable {
     private final int serverPort;
     private final ServerSocket serverSocket;
     private Socket client;
-    private int timeout = 10000;
 
     private final SerialPort arduino;
     private Scanner arduinoScanner;
@@ -38,6 +37,7 @@ public final class ArduinoServer implements Runnable {
                 if(!arduino.isOpen()) {
                     logger.info("Connecting to arduino...");
                     while(!arduino.openPort());
+                    logger.info("Waiting...");
                     Thread.sleep(5000);
                     arduinoScanner = new Scanner(arduino.getInputStream());
                     arduinoWriter = new PrintWriter(arduino.getOutputStream());
@@ -47,16 +47,17 @@ public final class ArduinoServer implements Runnable {
                 client = serverSocket.accept();
                 BufferedReader clientReader = new BufferedReader(new InputStreamReader(client.getInputStream()));
                 BufferedWriter clientWriter = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
-                //client.setSoTimeout(timeout);
                 logger.info("Accepted connection");
 
                 String input;
 
-                while(true) {
+                while(!client.isClosed()) {
                     try {
                         if((input = clientReader.readLine()) != null) {
                             logger.info("Got from client: " + input);
                             setCarValues(input);
+                        } else {
+                            throw new IOException("Connection reset");
                         }
 
                         String fromArduino = arduinoScanner.next();
@@ -104,14 +105,6 @@ public final class ArduinoServer implements Runnable {
 
     public SerialPort getArduino() {
         return arduino;
-    }
-
-    public int getTimeout() {
-        return timeout;
-    }
-
-    public void setTimeout(int timeout) {
-        this.timeout = timeout;
     }
 
     public int getServerPort() {
