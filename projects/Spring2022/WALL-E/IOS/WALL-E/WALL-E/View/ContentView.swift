@@ -21,7 +21,7 @@ struct Video: View {
 }
 
 struct ContentView: View {
-    @State private var host = "172.28.27.194"
+    @State private var host = "172.20.10.2"
     @State private var port = "2113"
     @State private var player = AVPlayer()
     @State private var videoUrl: String = "https://vkvd148.mycdn.me/video.m3u8?srcIp=77.234.205.3&expires=1652117853619&srcAg=SAFARI_MAC&fromCache=1&ms=45.136.21.150&mid=1399293093983&type=4&sig=NAEobb5YRfY&ct=8&urls=185.226.53.204&clientType=13&cmd=videoPlayerCdn&id=665679628895"
