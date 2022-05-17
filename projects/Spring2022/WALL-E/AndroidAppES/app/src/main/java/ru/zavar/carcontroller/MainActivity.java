@@ -28,6 +28,8 @@ public class MainActivity extends Activity {
             Intent myIntent = new Intent(this, ControlActivity.class);
             myIntent.putExtra("address", ((EditText)findViewById(R.id.car_host_text)).getText().toString());
             myIntent.putExtra("camera", ((EditText)findViewById(R.id.camera_host_text)).getText().toString());
+            myIntent.putExtra("front", ((EditText)findViewById(R.id.camera_front)).getText().toString());
+            myIntent.putExtra("back", ((EditText)findViewById(R.id.camera_back)).getText().toString());
             startActivity(myIntent);
         });
 

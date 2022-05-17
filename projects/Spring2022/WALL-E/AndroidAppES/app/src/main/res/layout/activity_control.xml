@@ -8,9 +8,9 @@
     tools:context=".ControlActivity">
 
     <WebView
-        android:id="@+id/camera_view"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:id="@+id/camera_front_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -18,15 +18,25 @@
 
     </WebView>
 
+    <WebView
+        android:id="@+id/camera_back_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <SeekBar
         android:id="@+id/gas"
         android:layout_width="221dp"
         android:layout_height="97dp"
         android:indeterminate="false"
-        android:max="100"
+        android:max="80"
         android:progress="0"
         android:progressTint="#4CAF50"
         android:rotation="-90"
+        android:hapticFeedbackEnabled="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -41,6 +51,7 @@
         android:progress="50"
         android:progressTint="#FF9800"
         android:rotation="0"
+        android:hapticFeedbackEnabled="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.064"
@@ -50,13 +61,44 @@
 
     <Button
         android:id="@+id/transmission"
-        android:layout_width="58dp"
+        android:layout_width="52dp"
         android:layout_height="52dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:background="#00BCD4"
+        android:fontFamily="sans-serif-black"
+        android:hapticFeedbackEnabled="true"
         android:text="P"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ToggleButton
+        android:id="@+id/toggleNitro"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:fontFamily="sans-serif-black"
+        android:hapticFeedbackEnabled="true"
+        android:textColorHighlight="#4CAF50"
+        android:textOff="Nitro"
+        android:textOn="Nitro"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.023"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.044" />
+
+    <Button
+        android:id="@+id/camera_button"
+        android:layout_width="77dp"
+        android:layout_height="54dp"
+        android:fontFamily="sans-serif-medium"
+        android:hapticFeedbackEnabled="true"
+        android:text="Change view"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.041" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

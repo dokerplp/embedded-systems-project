@@ -1,25 +1,27 @@
 package ru.zavar.carcontroller;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.SeekBar;
+import android.widget.ToggleButton;
 
 public class ControlActivity extends Activity {
 
-    private Button button;
     private RemoteCarTcpClient tcpClient;
+
+    private String getCameraData(String host, String port) {
+        return "<style>img{display: block; background-color: hsl(0, 0%, 25%); height: auto; max-width: 65%; margin-bottom: -10;margin-left: auto;margin-right: auto}</style>" + "<img src=\"http://" + host + ":" + port + "/\" width=\"1024\" height=\"720\">";
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,37 +29,72 @@ public class ControlActivity extends Activity {
         setContentView(R.layout.activity_control);
         String[] address = getIntent().getStringExtra("address").split(":");
         String cameraHost = getIntent().getStringExtra("camera");
+        String cameraFrontPort = getIntent().getStringExtra("front");
+        String cameraBackPort = getIntent().getStringExtra("back");
         tcpClient = new RemoteCarTcpClient(address[0], Integer.parseInt(address[1]));
-        WebView webView = findViewById(R.id.camera_view);
-        webView.setWebChromeClient(new WebChromeClient());
-        webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-        webView.setBackgroundColor(Color.BLACK);
-        webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-        webView.setOnTouchListener((v, event) -> (event.getAction() == MotionEvent.ACTION_MOVE));
-        webView.loadDataWithBaseURL(null, "<style>img{display: block; background-color: hsl(0, 0%, 25%); height: auto; max-width: 65%; margin-bottom: -10;margin-left: auto;margin-right: auto}</style>" + "<img src=\"http://" + cameraHost + "/\" width=\"1024\" height=\"720\">", "text/html", "UTF-8", null);
+        WebView webFrontView = findViewById(R.id.camera_front_view);
+        webFrontView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        webFrontView.setBackgroundColor(Color.BLACK);
+        webFrontView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+        webFrontView.setOnTouchListener((v, event) -> (event.getAction() == MotionEvent.ACTION_MOVE));
+        webFrontView.setVisibility(View.INVISIBLE);
+        webFrontView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                webFrontView.setVisibility(View.VISIBLE);
+            }
+        });
+        webFrontView.loadDataWithBaseURL(null, getCameraData(cameraHost, cameraFrontPort), "text/html", "UTF-8", null);
 
-        tcpClient.start();
+        WebView webBackView = findViewById(R.id.camera_back_view);
+        webBackView.setWebChromeClient(new WebChromeClient());
+        webBackView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        webBackView.setBackgroundColor(Color.BLACK);
+        webBackView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+        webBackView.setOnTouchListener((v, event) -> (event.getAction() == MotionEvent.ACTION_MOVE));
+        webBackView.loadDataWithBaseURL(null, getCameraData(cameraHost, cameraBackPort), "text/html", "UTF-8", null);
+        webBackView.setVisibility(View.INVISIBLE);
+
+
+        Button camera = findViewById(R.id.camera_button);
+        camera.setOnClickListener(v -> {
+            camera.performHapticFeedback(HapticFeedbackConstants.CONTEXT_CLICK);
+            if(webBackView.getVisibility() == View.VISIBLE) {
+                webFrontView.setVisibility(View.VISIBLE);
+                webBackView.setVisibility(View.INVISIBLE);
+            } else {
+                webFrontView.setVisibility(View.INVISIBLE);
+                webBackView.setVisibility(View.VISIBLE);
+            }
+        });
 
         Button transmission = findViewById(R.id.transmission);
-
         tcpClient.setTransmissionMode(TransmissionMode.PARK);
         transmission.setBackgroundColor(Color.CYAN);
         transmission.setText("P");
 
         transmission.setOnClickListener(v -> {
+            transmission.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
             tcpClient.nextTransmissionMode();
             switch (tcpClient.getTransmissionMode()) {
                 case PARK:
+                    webFrontView.setVisibility(View.VISIBLE);
+                    webBackView.setVisibility(View.INVISIBLE);
                     transmission.setBackgroundColor(Color.CYAN);
                     tcpClient.setTransmissionMode(TransmissionMode.PARK);
                     transmission.setText("P");
                     break;
                 case DRIVE:
+                    webFrontView.setVisibility(View.VISIBLE);
+                    webBackView.setVisibility(View.INVISIBLE);
                     transmission.setBackgroundColor(Color.GREEN);
                     tcpClient.setTransmissionMode(TransmissionMode.DRIVE);
                     transmission.setText("D");
                     break;
                 case REVERSE:
+                    webFrontView.setVisibility(View.INVISIBLE);
+                    webBackView.setVisibility(View.VISIBLE);
                     transmission.setBackgroundColor(Color.RED);
                     tcpClient.setTransmissionMode(TransmissionMode.REVERSE);
                     transmission.setText("R");
@@ -81,7 +118,17 @@ public class ControlActivity extends Activity {
             public void onStopTrackingTouch(SeekBar seekBar) {
                 gas.setProgress(0);
                 tcpClient.setGas(0);
+                gas.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK);
             }
+        });
+
+        ToggleButton nitro = findViewById(R.id.toggleNitro);
+        nitro.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            nitro.performHapticFeedback(HapticFeedbackConstants.REJECT);
+            if(isChecked)
+                gas.setMax(100);
+            else
+                gas.setMax(80);
         });
 
         SeekBar rotation = findViewById(R.id.rotation);
@@ -100,8 +147,12 @@ public class ControlActivity extends Activity {
             public void onStopTrackingTouch(SeekBar seekBar) {
                 rotation.setProgress(50);
                 tcpClient.setRotation(50);
+                rotation.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK);
             }
         });
+
+        tcpClient.start();
+
     }
 
     @Override

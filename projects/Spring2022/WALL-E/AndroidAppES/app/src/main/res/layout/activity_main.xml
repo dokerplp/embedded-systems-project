@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
-    tools:context=".MainActivity" >
+    android:background="#A19E9E"
+    tools:context=".MainActivity">
 
     <Button
         android:id="@+id/button"
@@ -18,7 +18,7 @@
         app:layout_constraintHorizontal_bias="0.499"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.712" />
+        app:layout_constraintVertical_bias="0.928" />
 
     <EditText
         android:id="@+id/car_host_text"
@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="text"
-        android:text="192.168.0.200:25565"
+        android:text="192.168.0.103:25565"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.499"
@@ -40,12 +40,40 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="text"
-        android:text="192.168.0.105:8081"
+        android:text="192.168.0.103"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.498" />
+
+    <EditText
+        android:id="@+id/camera_front"
+        android:layout_width="63dp"
+        android:layout_height="51dp"
+        android:ems="10"
+        android:inputType="number"
+        android:text="8081"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.413"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.73" />
+
+    <EditText
+        android:id="@+id/camera_back"
+        android:layout_width="63dp"
+        android:layout_height="51dp"
+        android:ems="10"
+        android:inputType="number"
+        android:text="8082"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.586"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.73" />
 
     <TextView
         android:id="@+id/textView"
@@ -69,4 +97,28 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.413" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Front port"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.412"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.622" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Back port"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.588"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.622" />
 </androidx.constraintlayout.widget.ConstraintLayout>
