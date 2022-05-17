@@ -18,37 +18,43 @@ void setup() {
 }
 
 void loop() {
-  for(int i = FORWARD_MIN; i <= FORWARD_MAX; i++)
-  {
-    esc.writeMicroseconds(i);
-    delay(300);
-    Serial.println(i);
-  }
-  esc.writeMicroseconds(STOP);
-  for(int i = FORWARD_MAX; i >= FORWARD_MIN; i--)
-  {
-    esc.writeMicroseconds(i);
-    delay(300);
-    Serial.println(i);
-  }
-  esc.writeMicroseconds(STOP);
-  delay(40);
-  esc.writeMicroseconds(BACKWARD_MIN);
-  delay(40);
-  esc.writeMicroseconds(STOP);
-  delay(40);
-  for(int i = BACKWARD_MIN; i >= BACKWARD_MAX; i--)
-  {
-    esc.writeMicroseconds(i);
-    delay(300);
-    Serial.println(i);
-  }
-  esc.writeMicroseconds(STOP);
-  for(int i = BACKWARD_MAX; i <= BACKWARD_MIN; i++)
-  {
-    esc.writeMicroseconds(i);
-    delay(300);
-    Serial.println(i);
-  }
-  esc.writeMicroseconds(STOP);
+
+  esc.writeMicroseconds(value);
+  if(Serial.available()) 
+    value = Serial.parseInt();    // Parse an Integer from Serial
+
+
+  // for(int i = FORWARD_MIN; i <= FORWARD_MAX; i++)
+  // {
+  //   esc.writeMicroseconds(i);
+  //   delay(300);
+  //   Serial.println(i);
+  // }
+  // esc.writeMicroseconds(STOP);
+  // for(int i = FORWARD_MAX; i >= FORWARD_MIN; i--)
+  // {
+  //   esc.writeMicroseconds(i);
+  //   delay(300);
+  //   Serial.println(i);
+  // }
+  // esc.writeMicroseconds(STOP);
+  // delay(40);
+  // esc.writeMicroseconds(BACKWARD_MIN);
+  // delay(40);
+  // esc.writeMicroseconds(STOP);
+  // delay(40);
+  // for(int i = BACKWARD_MIN; i >= BACKWARD_MAX; i--)
+  // {
+  //   esc.writeMicroseconds(i);
+  //   delay(300);
+  //   Serial.println(i);
+  // }
+  // esc.writeMicroseconds(STOP);
+  // for(int i = BACKWARD_MAX; i <= BACKWARD_MIN; i++)
+  // {
+  //   esc.writeMicroseconds(i);
+  //   delay(300);
+  //   Serial.println(i);
+  // }
+  // esc.writeMicroseconds(STOP);
 }
