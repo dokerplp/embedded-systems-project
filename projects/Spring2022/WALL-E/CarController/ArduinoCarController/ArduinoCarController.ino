@@ -40,6 +40,9 @@ float inputSpeed = 0;
 float inputAngle = 0;
 int escBatteryLevel = 0;
 int rpiBatteryLevel = 0;
+int prevEscBatteryLevel = -1;
+int prevRpiBatteryLevel = -1;
+String out;
 
 long toStop = 0;
 
@@ -65,9 +68,11 @@ void loop()
       }
     }
 
-    escBatteryLevel = map(analogRead(ESC_BATTERY_PIN), 0, 1024, 0, 100);
+    escBatteryLevel = map(analogRead(ESC_BATTERY_PIN), 0, 338, 0, 100);
     rpiBatteryLevel = map(analogRead(RPI_BATTERY_PIN), 0, 1024, 0, 100);
-    Serial.println(String(escBatteryLevel) + "-" + String(rpiBatteryLevel));
+    if(escBatteryLevel != prevEscBatteryLevel || rpiBatteryLevel != prevRpiBatteryLevel)
+      out = String(escBatteryLevel) + "-" + String(rpiBatteryLevel);
+    Serial.println(out);
 
     inputSpeed = values[0].toFloat();
     inputAngle = values[1].toFloat();
@@ -103,6 +108,8 @@ void loop()
 
     prevSpeed = inputSpeed;
     prevAngle = inputAngle;
+    prevEscBatteryLevel = escBatteryLevel;
+    prevRpiBatteryLevel = rpiBatteryLevel;
   }
 
   if (!Serial)

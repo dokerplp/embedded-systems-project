@@ -3,7 +3,8 @@ package ru.zavar.carcontroller;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
@@ -12,12 +13,18 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.ToggleButton;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ControlActivity extends Activity {
 
     private RemoteCarTcpClient tcpClient;
+    private Handler handler = new Handler(Looper.getMainLooper());
 
     private String getCameraData(String host, String port) {
         return "<style>img{display: block; background-color: hsl(0, 0%, 25%); height: auto; max-width: 65%; margin-bottom: -10;margin-left: auto;margin-right: auto}</style>" + "<img src=\"http://" + host + ":" + port + "/\" width=\"1024\" height=\"720\">";
@@ -124,9 +131,10 @@ public class ControlActivity extends Activity {
 
         ToggleButton nitro = findViewById(R.id.toggleNitro);
         nitro.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            nitro.performHapticFeedback(HapticFeedbackConstants.REJECT);
-            if(isChecked)
+            if(isChecked) {
+                nitro.performHapticFeedback(HapticFeedbackConstants.REJECT);
                 gas.setMax(100);
+            }
             else
                 gas.setMax(80);
         });
@@ -151,8 +159,25 @@ public class ControlActivity extends Activity {
             }
         });
 
-        tcpClient.start();
+        ProgressBar engineBattery = findViewById(R.id.engineBattery);
+        ProgressBar rpiBattery = findViewById(R.id.rpiBattery);
+        TextView engineBatteryText = findViewById(R.id.engineBatteryText);
+        TextView rpiBatteryText = findViewById(R.id.rpiBatteryText);
 
+        tcpClient.setEngineBatteryListener(value -> {
+            handler.post(() -> {
+                engineBattery.setProgress(value);
+                engineBatteryText.setText(String.valueOf(value));
+            });
+        });
+        tcpClient.setRpiBatteryListener(value -> {
+            handler.post(() -> {
+                rpiBattery.setProgress(value);
+                rpiBatteryText.setText(String.valueOf(value));
+            });
+        });
+
+        tcpClient.start();
     }
 
     @Override
@@ -161,4 +186,5 @@ public class ControlActivity extends Activity {
         tcpClient.stop();
         finish();
     }
+
 }
