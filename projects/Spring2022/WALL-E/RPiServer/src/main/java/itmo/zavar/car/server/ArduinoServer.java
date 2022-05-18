@@ -50,6 +50,8 @@ public final class ArduinoServer implements Runnable {
                 logger.info("Accepted connection");
 
                 String input;
+                String fromArduino = "0-0";
+                String prevFromArduino = fromArduino;
 
                 while(!client.isClosed()) {
                     try {
@@ -60,11 +62,18 @@ public final class ArduinoServer implements Runnable {
                             throw new IOException("Connection reset");
                         }
 
-                        String fromArduino = arduinoScanner.next();
-                        logger.info("Got from arduino: " + fromArduino);
-                        clientWriter.write(fromArduino);
+
+                        if(arduinoScanner.hasNext("\\d+-\\d+")) {
+                            fromArduino = arduinoScanner.next();
+                            logger.info("Got from arduino: " + fromArduino);
+                            clientWriter.write(fromArduino);
+                        } else {
+                            logger.info("Got from arduino: " + prevFromArduino);
+                            clientWriter.write(prevFromArduino);
+                        }
                         clientWriter.newLine();//only for Java client, should be removed
                         clientWriter.flush();
+                        prevFromArduino = fromArduino;
 
                     } catch (IOException e) {
                         client.close();
