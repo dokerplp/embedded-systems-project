@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,6 +17,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import java.util.concurrent.ExecutorService;
@@ -177,7 +179,21 @@ public class ControlActivity extends Activity {
             });
         });
 
+        tcpClient.setStopListener(() -> {
+            handler.post(() -> {
+                finish();
+                Toast.makeText(getApplicationContext(), "Connection failed", Toast.LENGTH_LONG).show();
+            });
+        });
+
         tcpClient.start();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        tcpClient.stop();
+        finish();
     }
 
     @Override

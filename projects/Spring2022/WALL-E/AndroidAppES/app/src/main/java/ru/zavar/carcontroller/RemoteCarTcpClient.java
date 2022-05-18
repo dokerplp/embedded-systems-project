@@ -1,12 +1,16 @@
 package ru.zavar.carcontroller;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.InetSocketAddress;
 import java.net.NoRouteToHostException;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -26,7 +30,7 @@ public final class RemoteCarTcpClient {
     private final int port;
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
-    private boolean isStopped = false;
+    private StopListener stopListener;
 
     private BatteryValueChangedListener engineBatteryListener;
     private BatteryValueChangedListener rpiBatteryListener;
@@ -39,14 +43,17 @@ public final class RemoteCarTcpClient {
     public void start() {
         executor.execute(() -> {
             try {
-                socket = new Socket(host, port);
+                socket = new Socket();
+                SocketAddress socketAddress = new InetSocketAddress(host, port);
+                socket.connect(socketAddress, 3000);
+                socket.setSoTimeout(2000);
                 clientReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 clientWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
                 String input;
                 int prevEngineBatteryValue = -1;
                 int prevRpiBatteryValue = -1;
-                while (!socket.isClosed() && !Thread.currentThread().isInterrupted()) {
+                while (!socket.isClosed() && !Thread.currentThread().isInterrupted() && socket.isConnected()) {
                     clientWriter.write((double) gas / 100 + ":" + rotation);
                     clientWriter.newLine();
                     clientWriter.flush();
@@ -60,7 +67,7 @@ public final class RemoteCarTcpClient {
                             rpiBatteryValue = Integer.parseInt(values[1]);
                             if (rpiBatteryListener != null && prevRpiBatteryValue != rpiBatteryValue)
                                 rpiBatteryListener.onBatteryValueChanged(rpiBatteryValue);
-                        } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
+                        } catch (ArrayIndexOutOfBoundsException | NumberFormatException ignored) {
 
                         } finally {
                             prevEngineBatteryValue = engineBatteryValue;
@@ -68,28 +75,29 @@ public final class RemoteCarTcpClient {
                         }
                     }
                 }
+            } catch (Exception ignored) {
 
-            } catch (IOException e) {
-                e.printStackTrace();
+            } finally {
+                stop();
             }
         });
     }
 
     public void stop() {
         try {
-            socket.shutdownInput();
-            socket.shutdownOutput();
-            socket.close();
+            if(socket != null && socket.isConnected()) {
+                socket.shutdownInput();
+                socket.shutdownOutput();
+                socket.close();
+            }
             executor.shutdownNow();
-            isStopped = true;
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            stopListener.onStop();
         }
     }
 
-    public boolean isStopped() {
-        return isStopped;
-    }
 
     public void setGas(int gas) {
         if (transmissionMode == TransmissionMode.REVERSE)
@@ -148,9 +156,18 @@ public final class RemoteCarTcpClient {
     public void setRpiBatteryListener(BatteryValueChangedListener listener) {
         this.rpiBatteryListener = listener;
     }
+
+    public void setStopListener(StopListener stopListener) {
+        this.stopListener = stopListener;
+    }
 }
 
 @FunctionalInterface
 interface BatteryValueChangedListener {
     void onBatteryValueChanged(int value);
+}
+
+@FunctionalInterface
+interface StopListener {
+    void onStop();
 }
