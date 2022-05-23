@@ -29,7 +29,7 @@ public class ControlActivity extends Activity {
     private Handler handler = new Handler(Looper.getMainLooper());
 
     private String getCameraData(String host, String port) {
-        return "<style>img{display: block; background-color: hsl(0, 0%, 25%); height: auto; max-width: 65%; margin-bottom: -10;margin-left: auto;margin-right: auto}</style>" + "<img src=\"http://" + host + ":" + port + "/\" width=\"1024\" height=\"720\">";
+        return "<style>img{display: block; background-color: hsl(0, 0%, 25%); height: auto; max-width: 65%;margin-left: auto;margin-right: auto}</style>" + "<img src=\"http://" + host + ":" + port + "/\" width=\"1024\" height=\"720\">";
     }
 
     @Override
@@ -179,10 +179,11 @@ public class ControlActivity extends Activity {
             });
         });
 
-        tcpClient.setStopListener(() -> {
+        tcpClient.setStopListener((String message) -> {
             handler.post(() -> {
                 finish();
-                Toast.makeText(getApplicationContext(), "Connection failed", Toast.LENGTH_LONG).show();
+                if(!message.isEmpty())
+                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
             });
         });
 
@@ -192,7 +193,7 @@ public class ControlActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        tcpClient.stop();
+        tcpClient.stop("Connection reset");
         finish();
     }
 

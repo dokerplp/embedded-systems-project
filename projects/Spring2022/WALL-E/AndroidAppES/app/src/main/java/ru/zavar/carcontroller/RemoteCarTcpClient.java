@@ -83,7 +83,7 @@ public final class RemoteCarTcpClient {
         });
     }
 
-    public void stop() {
+    public void stop(String message) {
         try {
             if(socket != null && socket.isConnected()) {
                 socket.shutdownInput();
@@ -94,10 +94,13 @@ public final class RemoteCarTcpClient {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            stopListener.onStop();
+            stopListener.onStop(message);
         }
     }
 
+    public void stop() {
+        stop("");
+    }
 
     public void setGas(int gas) {
         if (transmissionMode == TransmissionMode.REVERSE)
@@ -169,5 +172,5 @@ interface BatteryValueChangedListener {
 
 @FunctionalInterface
 interface StopListener {
-    void onStop();
+    void onStop(String message);
 }
