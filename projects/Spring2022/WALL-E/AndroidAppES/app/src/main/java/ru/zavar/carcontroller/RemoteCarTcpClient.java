@@ -1,14 +1,11 @@
 package ru.zavar.carcontroller;
 
-import android.util.Log;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.InetSocketAddress;
-import java.net.NoRouteToHostException;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.concurrent.ExecutorService;
@@ -29,8 +26,10 @@ public final class RemoteCarTcpClient {
     private final String host;
     private final int port;
 
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private final ExecutorService executor;
+    private boolean isStopped = true;
     private StopListener stopListener;
+    private ConnectListener connectListener;
 
     private BatteryValueChangedListener engineBatteryListener;
     private BatteryValueChangedListener rpiBatteryListener;
@@ -38,22 +37,25 @@ public final class RemoteCarTcpClient {
     public RemoteCarTcpClient(String host, int port) {
         this.host = host;
         this.port = port;
+        executor = Executors.newSingleThreadExecutor();
     }
 
     public void start() {
         executor.execute(() -> {
             try {
+                isStopped = false;
                 socket = new Socket();
                 SocketAddress socketAddress = new InetSocketAddress(host, port);
                 socket.connect(socketAddress, 3000);
+                if(connectListener != null)
+                    connectListener.onConnect();
                 socket.setSoTimeout(2000);
                 clientReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 clientWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-
                 String input;
                 int prevEngineBatteryValue = -1;
                 int prevRpiBatteryValue = -1;
-                while (!socket.isClosed() && !Thread.currentThread().isInterrupted() && socket.isConnected()) {
+                while (!isStopped && !socket.isClosed() && !Thread.currentThread().isInterrupted() && socket.isConnected()) {
                     clientWriter.write((double) gas / 100 + ":" + rotation);
                     clientWriter.newLine();
                     clientWriter.flush();
@@ -78,23 +80,27 @@ public final class RemoteCarTcpClient {
             } catch (Exception ignored) {
 
             } finally {
-                stop();
+                stop("Connection failed");
             }
         });
     }
 
     public void stop(String message) {
-        try {
-            if(socket != null && socket.isConnected()) {
-                socket.shutdownInput();
-                socket.shutdownOutput();
-                socket.close();
+        if(!isStopped) {
+            isStopped = true;
+            try {
+                if(socket != null && socket.isConnected()) {
+                    socket.shutdownInput();
+                    socket.shutdownOutput();
+                    socket.close();
+                }
+                executor.shutdownNow();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if(stopListener != null)
+                    stopListener.onStop(message);
             }
-            executor.shutdownNow();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            stopListener.onStop(message);
         }
     }
 
@@ -114,8 +120,8 @@ public final class RemoteCarTcpClient {
         this.rotation = mapf(rotation, 0, 100, -1.0, 1.0);
     }
 
-    private double mapf(double val, double in_min, double in_max, double out_min, double out_max) {
-        return (val - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+    private double mapf(double val, double inMin, double inMax, double outMin, double outMax) {
+        return (val - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
     }
 
     public void setTransmissionMode(TransmissionMode transmissionMode) {
@@ -144,6 +150,10 @@ public final class RemoteCarTcpClient {
             transmissionMode = TransmissionMode.PARK;
     }
 
+    public boolean isStopped() {
+        return isStopped;
+    }
+
     public int getEngineBatteryValue() {
         return engineBatteryValue;
     }
@@ -152,16 +162,20 @@ public final class RemoteCarTcpClient {
         return rpiBatteryValue;
     }
 
-    public void setEngineBatteryListener(BatteryValueChangedListener listener) {
+    public void setOnEngineBatteryChange(BatteryValueChangedListener listener) {
         this.engineBatteryListener = listener;
     }
 
-    public void setRpiBatteryListener(BatteryValueChangedListener listener) {
+    public void setOnRpiBatteryChange(BatteryValueChangedListener listener) {
         this.rpiBatteryListener = listener;
     }
 
-    public void setStopListener(StopListener stopListener) {
+    public void setOnStop(StopListener stopListener) {
         this.stopListener = stopListener;
+    }
+
+    public void setOnConnect(ConnectListener connectListener) {
+        this.connectListener = connectListener;
     }
 }
 
@@ -173,4 +187,9 @@ interface BatteryValueChangedListener {
 @FunctionalInterface
 interface StopListener {
     void onStop(String message);
+}
+
+@FunctionalInterface
+interface ConnectListener {
+    void onConnect();
 }

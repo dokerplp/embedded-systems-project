@@ -1,81 +1,101 @@
 package ru.zavar.carcontroller;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 public class ControlActivity extends Activity {
 
     private RemoteCarTcpClient tcpClient;
-    private Handler handler = new Handler(Looper.getMainLooper());
+    private boolean frontCameraLoaded = true;
+    private boolean backCameraLoaded = true;
+    private final Handler handler = new Handler(Looper.getMainLooper());
+    private WebView webBackView;
+    private WebView webFrontView;
+    private ImageView cameraFailImage;
+    private ConstraintLayout mainLayout;
 
     private String getCameraData(String host, String port) {
         return "<style>img{display: block; background-color: hsl(0, 0%, 25%); height: auto; max-width: 65%;margin-left: auto;margin-right: auto}</style>" + "<img src=\"http://" + host + ":" + port + "/\" width=\"1024\" height=\"720\">";
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_control);
+        mainLayout = findViewById(R.id.main_layout);
+        mainLayout.setAlpha(0.0f);
         String[] address = getIntent().getStringExtra("address").split(":");
         String cameraHost = getIntent().getStringExtra("camera");
         String cameraFrontPort = getIntent().getStringExtra("front");
         String cameraBackPort = getIntent().getStringExtra("back");
         tcpClient = new RemoteCarTcpClient(address[0], Integer.parseInt(address[1]));
-        WebView webFrontView = findViewById(R.id.camera_front_view);
+
+        cameraFailImage = findViewById(R.id.camera_fail);
+
+        webFrontView = findViewById(R.id.camera_front_view);
         webFrontView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         webFrontView.setBackgroundColor(Color.BLACK);
         webFrontView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
         webFrontView.setOnTouchListener((v, event) -> (event.getAction() == MotionEvent.ACTION_MOVE));
-        webFrontView.setVisibility(View.INVISIBLE);
+        webFrontView.setVisibility(View.VISIBLE);
         webFrontView.setWebViewClient(new WebViewClient() {
             @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
-                webFrontView.setVisibility(View.VISIBLE);
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                super.onReceivedError(view, request, error);
+                webFrontView.setVisibility(View.INVISIBLE);
+                cameraFailImage.setVisibility(View.VISIBLE);
+                frontCameraLoaded = false;
             }
         });
         webFrontView.loadDataWithBaseURL(null, getCameraData(cameraHost, cameraFrontPort), "text/html", "UTF-8", null);
 
-        WebView webBackView = findViewById(R.id.camera_back_view);
+        webBackView = findViewById(R.id.camera_back_view);
         webBackView.setWebChromeClient(new WebChromeClient());
         webBackView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         webBackView.setBackgroundColor(Color.BLACK);
         webBackView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
         webBackView.setOnTouchListener((v, event) -> (event.getAction() == MotionEvent.ACTION_MOVE));
-        webBackView.loadDataWithBaseURL(null, getCameraData(cameraHost, cameraBackPort), "text/html", "UTF-8", null);
         webBackView.setVisibility(View.INVISIBLE);
-
+        webBackView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                super.onReceivedError(view, request, error);
+                webBackView.setVisibility(View.INVISIBLE);
+                backCameraLoaded = false;
+            }
+        });
+        webBackView.loadDataWithBaseURL(null, getCameraData(cameraHost, cameraBackPort), "text/html", "UTF-8", null);
 
         Button camera = findViewById(R.id.camera_button);
         camera.setOnClickListener(v -> {
             camera.performHapticFeedback(HapticFeedbackConstants.CONTEXT_CLICK);
-            if(webBackView.getVisibility() == View.VISIBLE) {
-                webFrontView.setVisibility(View.VISIBLE);
-                webBackView.setVisibility(View.INVISIBLE);
-            } else {
-                webFrontView.setVisibility(View.INVISIBLE);
-                webBackView.setVisibility(View.VISIBLE);
-            }
+            if(webBackView.getVisibility() == View.VISIBLE)
+                switchToFrontCamera();
+            else
+                switchToBackCamera();
         });
 
         Button transmission = findViewById(R.id.transmission);
@@ -88,22 +108,19 @@ public class ControlActivity extends Activity {
             tcpClient.nextTransmissionMode();
             switch (tcpClient.getTransmissionMode()) {
                 case PARK:
-                    webFrontView.setVisibility(View.VISIBLE);
-                    webBackView.setVisibility(View.INVISIBLE);
+                    switchToFrontCamera();
                     transmission.setBackgroundColor(Color.CYAN);
                     tcpClient.setTransmissionMode(TransmissionMode.PARK);
                     transmission.setText("P");
                     break;
                 case DRIVE:
-                    webFrontView.setVisibility(View.VISIBLE);
-                    webBackView.setVisibility(View.INVISIBLE);
+                    switchToFrontCamera();
                     transmission.setBackgroundColor(Color.GREEN);
                     tcpClient.setTransmissionMode(TransmissionMode.DRIVE);
                     transmission.setText("D");
                     break;
                 case REVERSE:
-                    webFrontView.setVisibility(View.INVISIBLE);
-                    webBackView.setVisibility(View.VISIBLE);
+                    switchToBackCamera();
                     transmission.setBackgroundColor(Color.RED);
                     tcpClient.setTransmissionMode(TransmissionMode.REVERSE);
                     transmission.setText("R");
@@ -131,7 +148,7 @@ public class ControlActivity extends Activity {
             }
         });
 
-        ToggleButton nitro = findViewById(R.id.toggleNitro);
+        ToggleButton nitro = findViewById(R.id.toggle_nitro);
         nitro.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if(isChecked) {
                 nitro.performHapticFeedback(HapticFeedbackConstants.REJECT);
@@ -161,30 +178,29 @@ public class ControlActivity extends Activity {
             }
         });
 
-        ProgressBar engineBattery = findViewById(R.id.engineBattery);
-        ProgressBar rpiBattery = findViewById(R.id.rpiBattery);
-        TextView engineBatteryText = findViewById(R.id.engineBatteryText);
-        TextView rpiBatteryText = findViewById(R.id.rpiBatteryText);
+        ProgressBar engineBattery = findViewById(R.id.engine_battery);
+        ProgressBar rpiBattery = findViewById(R.id.rpi_battery);
+        TextView engineBatteryText = findViewById(R.id.engine_battery_text);
+        TextView rpiBatteryText = findViewById(R.id.rpi_battery_text);
 
-        tcpClient.setEngineBatteryListener(value -> {
-            handler.post(() -> {
-                engineBattery.setProgress(value);
-                engineBatteryText.setText(String.valueOf(value));
-            });
-        });
-        tcpClient.setRpiBatteryListener(value -> {
-            handler.post(() -> {
-                rpiBattery.setProgress(value);
-                rpiBatteryText.setText(String.valueOf(value));
-            });
-        });
+        tcpClient.setOnEngineBatteryChange(value -> handler.post(() -> {
+            engineBattery.setProgress(value);
+            engineBatteryText.setText(String.valueOf(value));
+        }));
+        tcpClient.setOnRpiBatteryChange(value -> handler.post(() -> {
+            rpiBattery.setProgress(value);
+            rpiBatteryText.setText(String.valueOf(value));
+        }));
 
-        tcpClient.setStopListener((String message) -> {
-            handler.post(() -> {
-                finish();
-                if(!message.isEmpty())
-                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-            });
+        tcpClient.setOnStop(message -> handler.post(() -> {
+            mainLayout.animate().translationY(mainLayout.getHeight()).alpha(0.0f).setDuration(1000).scaleX(-20);
+            finish();
+            if(!message.isEmpty())
+                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+        }));
+
+        tcpClient.setOnConnect(() -> {
+            mainLayout.animate().translationY(0).alpha(1.0f).setDuration(1000);
         });
 
         tcpClient.start();
@@ -193,7 +209,7 @@ public class ControlActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        tcpClient.stop("Connection reset");
+        tcpClient.stop();
         finish();
     }
 
@@ -202,6 +218,28 @@ public class ControlActivity extends Activity {
         super.onBackPressed();
         tcpClient.stop();
         finish();
+    }
+
+    private void switchToFrontCamera() {
+        if(frontCameraLoaded) {
+            webFrontView.setVisibility(View.VISIBLE);
+            webBackView.setVisibility(View.INVISIBLE);
+            cameraFailImage.setVisibility(View.INVISIBLE);
+        } else {
+            webFrontView.setVisibility(View.INVISIBLE);
+            cameraFailImage.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void switchToBackCamera() {
+        if(backCameraLoaded) {
+            webFrontView.setVisibility(View.INVISIBLE);
+            webBackView.setVisibility(View.VISIBLE);
+            cameraFailImage.setVisibility(View.INVISIBLE);
+        } else {
+            webBackView.setVisibility(View.INVISIBLE);
+            cameraFailImage.setVisibility(View.VISIBLE);
+        }
     }
 
 }
