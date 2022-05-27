@@ -94,6 +94,8 @@ struct ActionTransmissionView: View {
     
     @Binding public var speed: Double
     @Binding public var transmission: TransmissionView.TransmissionType
+    @Binding public var camera: Camera
+    
     
     var body: some View {
         Button(action: {
@@ -101,6 +103,8 @@ struct ActionTransmissionView: View {
             self.transmission = self.transmission == .drive ? .reverse :
                 self.transmission == .reverse
             ? .parking : .drive
+            
+            self.camera = self.transmission == .reverse ? .back : .front
         }) {
             TransmissionView(transmission: $transmission)
                 .padding()
@@ -199,6 +203,7 @@ struct CarControlView: View {
     @Binding public var client: Client
     @Binding public var car: Car
     @Binding public var settings: Settings
+    @Binding public var camera: Camera
     
     @State private var transmission: TransmissionView.TransmissionType = .drive
     @State private var speed: Double = 0.0
@@ -212,7 +217,7 @@ struct CarControlView: View {
                 Spacer()
                 ActionSpeedometerView(speed: $speed)
                 Spacer()
-                ActionTransmissionView(speed: $speed, transmission: $transmission)
+                ActionTransmissionView(speed: $speed, transmission: $transmission, camera: $camera)
             }
             Spacer()
             HStack {
@@ -237,7 +242,7 @@ struct CarControlView: View {
 
 struct CarControlView_Previews: PreviewProvider {
     static var previews: some View {
-        CarControlView(client: .constant(Client()), car: .constant(Car()), settings: .constant(Settings()))
+        CarControlView(client: .constant(Client()), car: .constant(Car()), settings: .constant(Settings()), camera: .constant(.front))
             .previewInterfaceOrientation(.landscapeLeft)
     }
 }

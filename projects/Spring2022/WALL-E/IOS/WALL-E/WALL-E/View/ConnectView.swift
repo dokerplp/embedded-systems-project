@@ -21,20 +21,43 @@ struct CustomFieldStyle: TextFieldStyle {
 struct DataView: View {
     @Binding public var host: String
     @Binding public var port: String
+    @Binding public var fcamera: String
+    @Binding public var bcamera: String
     
     var body: some View {
         VStack {
-                TextField(
-                    "Host: ",
-                    text: $host
-                )
-                .disableAutocorrection(true)
-    
-                TextField(
-                    "Port: ",
-                    text: $port
-                )
-                .disableAutocorrection(true)
+                HStack {
+                    TextField(
+                        "Host: ",
+                        text: $host
+                    )
+                    .disableAutocorrection(true)
+                    .padding()
+                    
+                    TextField(
+                        "Port: ",
+                        text: $port
+                    )
+                    .disableAutocorrection(true)
+                    .padding()
+                }
+                
+                HStack {
+                    TextField(
+                        "Front camera: ",
+                        text: $fcamera
+                    )
+                    .disableAutocorrection(true)
+                    .padding()
+                    
+                    TextField(
+                        "Back camera: ",
+                        text: $bcamera
+                    )
+                    .disableAutocorrection(true)
+                    .padding()
+                }
+
             }
             .textFieldStyle(
                 CustomFieldStyle()
@@ -77,20 +100,24 @@ struct ConnectView: View {
     @Binding public var client: Client
     @Binding public var host: String
     @Binding public var port: String
+    @Binding public var fcamera: String
+    @Binding public var bcamera: String
     
     var body: some View {
         VStack {
-            DataView(host: $host, port: $port)
+            Spacer()
+            DataView(host: $host, port: $port, fcamera: $fcamera, bcamera: $bcamera)
             ButtonView(host: $host, port: $port, client: $client)
+            Spacer()
         }
     }
 }
 
 struct ConnectView_Previews: PreviewProvider {
     static var previews: some View {
-        ConnectView(client: .constant(Client()), host: .constant("127.0.0.1"), port: .constant("2113"))
-            .previewInterfaceOrientation(.landscapeRight)
-        ConnectView(client: .constant(Client()), host: .constant("127.0.0.1"), port: .constant("2113"))
+    
+        ConnectView(client: .constant(Client()), host: .constant("127.0.0.1"), port: .constant("2113"), fcamera: .constant("127.0.0.1"), bcamera: .constant("127.0.0.1"))
             .preferredColorScheme(.dark)
+            .previewInterfaceOrientation(.landscapeRight)
     }
 }

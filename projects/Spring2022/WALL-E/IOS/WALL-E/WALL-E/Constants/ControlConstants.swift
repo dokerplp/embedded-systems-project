@@ -21,12 +21,14 @@ struct ControlViewConstants {
 
 struct ConnectViewConstants {
     public static let DATA_FIELD_SIZE = ScreenConstants.SCREEN_WIDTH * 0.9
-    public static let BUTTON_SIZE = ScreenConstants.SCREEN_WIDTH * 0.4
+    public static let BUTTON_SIZE = min(ScreenConstants.SCREEN_WIDTH * 0.4, 200)
 }
 
 struct BatteryViewConstants {
-    public static let BATTERY_WIDTH = ScreenConstants.SCREEN_WIDTH * 0.35
-    public static let BATTERY_HEIGHT = ScreenConstants.SCREEN_WIDTH * 0.15
+    public static let BATTERY_WIDTH = min(ScreenConstants.SCREEN_WIDTH * 0.35, 150)
+    public static let BATTERY_HEIGHT = min(ScreenConstants.SCREEN_WIDTH * 0.15, 75)
+                                      
+                                           
 }
 
 struct CarControlViewConstants {
