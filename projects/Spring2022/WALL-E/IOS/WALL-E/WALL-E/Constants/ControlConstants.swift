@@ -7,23 +7,28 @@
 
 import SwiftUI
 
+
+///`ScreenConstants` describes the parameters of the user's device
 struct ScreenConstants {
     public static let SCREEN_WIDTH = UIDevice.current.orientation.isPortrait ?  UIScreen.main.bounds.width : UIScreen.main.bounds.height
     public static let SCREEN_HEIGHT = UIDevice.current.orientation.isPortrait ?  UIScreen.main.bounds.height : UIScreen.main.bounds.width
     public static let SCREEN_SIZE = UIScreen.main.bounds.size
 }
 
+///`ControlViewConstants` describes the size of the controls on `StickControlView` and `CarControlView`
 struct ControlViewConstants {
     public static let BORDER_SIZE = ScreenConstants.SCREEN_WIDTH * 0.5
     public static let STICK_SIZE = BORDER_SIZE * 0.2
     public static let MAX_RADIUS = (BORDER_SIZE - STICK_SIZE) / 2
 }
 
+///`ConnectViewConstants` describes the size of the `ConnectView`
 struct ConnectViewConstants {
     public static let DATA_FIELD_SIZE = ScreenConstants.SCREEN_WIDTH * 0.9
     public static let BUTTON_SIZE = min(ScreenConstants.SCREEN_WIDTH * 0.4, 200)
 }
 
+///`BatteryViewConstants` describes the size of the `BatteryView`
 struct BatteryViewConstants {
     public static let BATTERY_WIDTH = min(ScreenConstants.SCREEN_WIDTH * 0.35, 150)
     public static let BATTERY_HEIGHT = min(ScreenConstants.SCREEN_WIDTH * 0.15, 75)
@@ -31,6 +36,7 @@ struct BatteryViewConstants {
                                            
 }
 
+///`CarControlViewConstants` describes the size of the `CarElementsView`
 struct CarControlViewConstants {
     public static let WHEEL_SIZE = ScreenConstants.SCREEN_WIDTH * 0.04
     public static let BREAK_PEDAL_WIDTH = ControlViewConstants.BORDER_SIZE * 0.6

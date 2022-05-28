@@ -9,22 +9,17 @@ import Foundation
 import SwiftUI
 import simd
 
+
+/// Allows `WheelView`  to turn and send data
 struct ActionWheelView: View {
     
     @Binding public var client: Client
     @Binding public var car: Car
     @Binding public var settings: Settings
     
-    @Binding public var speed: Double
     @Binding public var transmission: TransmissionView.TransmissionType
     
     @State private var viewState = CGSize.zero
-    
-    
-    func getPower(charge: String) -> Int32 {
-        guard let battery = Int32(charge) else { return -1 }
-        return battery > 100 ? 100 : battery < 0 ? 0 : battery
-    }
         
     func calcRotate(sx: Double, sy: Double, x: Double, y: Double) -> Double {
         let _x = x - ControlViewConstants.BORDER_SIZE / 2
@@ -47,27 +42,15 @@ struct ActionWheelView: View {
         }
     }
     
-    func onChanged(sx: Double, sy: Double, x: Double, y: Double, speed: Double, transmission: TransmissionView.TransmissionType) {
+    func setDirection(sx: Double, sy: Double, x: Double, y: Double) {
         
         let rotate = calcRotate(sx: sx, sy: sy, x: x, y: y)
-        
-        let speed = transmission == .reverse ? -speed :
-        transmission == .parking ? 0.0 : speed
         
         if (rotate >= -100 && rotate <= 100) {
             viewState.width = rotate
         }
         
-        car.setCarParam(x: viewState.width / 100, y: speed / 100)
-
-        guard let power = client.write(dir: car.getDirection(), speed: car.getSpeed()) else { return }
-        
-        let batteries = power.components(separatedBy: " ")
-        let charge1 = getPower(charge: batteries[0])
-        let charge2 = getPower(charge: batteries[1])
-
-        settings.battery1 = charge1 != -1 ? charge1 : settings.battery1
-        settings.battery2 = charge2 != -1 ? charge2 : settings.battery1
+        car.setDirection(dir: viewState.width / 100)
     }
     
     
@@ -77,13 +60,13 @@ struct ActionWheelView: View {
             .rotationEffect(Angle(degrees: Double(viewState.width)))
                         .gesture(
                             DragGesture().onChanged{ value in
-                                DispatchQueue.global(qos: .background).async {
-                                onChanged(sx: value.startLocation.x, sy: value.startLocation.y, x: value.location.x, y: value.location.y, speed: self.speed, transmission: transmission
-                                )
-                                }
+                            
+                                    setDirection(sx: value.startLocation.x, sy: value.startLocation.y, x: value.location.x, y: value.location.y)
+                                
                             }.onEnded { value in
                                 withAnimation(.spring()) {
                                     viewState = .zero
+                                    car.setDirection(dir: 0.0)
                                 }
                             }
                     )
@@ -91,15 +74,16 @@ struct ActionWheelView: View {
 }
 
 struct ActionTransmissionView: View {
-    
-    @Binding public var speed: Double
+
+    @Binding public var car: Car
     @Binding public var transmission: TransmissionView.TransmissionType
     @Binding public var camera: Camera
     
     
     var body: some View {
         Button(action: {
-            speed = 0
+            car.setSpeed(speed: 0.0)
+            
             self.transmission = self.transmission == .drive ? .reverse :
                 self.transmission == .reverse
             ? .parking : .drive
@@ -114,7 +98,7 @@ struct ActionTransmissionView: View {
 
 struct ActionPedalsView: View {
 
-    @Binding public var speed: Double
+    @Binding public var car: Car
     @Binding public var transmission: TransmissionView.TransmissionType
     
     @State private var timer: Timer?
@@ -124,8 +108,8 @@ struct ActionPedalsView: View {
         if (transmission != .parking) {
             self.isLongPressing = true
             self.timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { _ in
-                let s = self.speed + Double(i)
-                self.speed = s > 100 ? 100 : s < 0 ? 0 : s
+                let s = car.getSpeed() + Double(i)
+                car.setSpeed(speed: s > 100 ? 100 : s < 0 ? 0 : s)
             })
         }
     }
@@ -136,20 +120,21 @@ struct ActionPedalsView: View {
                 Spacer()
                 Button(
                     action: {
-                        if(self.isLongPressing){
+                        if (self.isLongPressing) {
                             self.isLongPressing.toggle()
                             self.timer?.invalidate()
                         }
                     }, label: {
                         GazPedalView()
                             .padding()
-                            
                     }
                 )
                 .simultaneousGesture(
                     LongPressGesture()
                         .onEnded { _ in
-                            changeSpeed(i: -5)
+                            if (!isLongPressing) {
+                                changeSpeed(i: -5)
+                            }
                 })
             }
             VStack {
@@ -168,7 +153,9 @@ struct ActionPedalsView: View {
                 .simultaneousGesture(
                     LongPressGesture()
                         .onEnded { _ in
-                            changeSpeed(i: 5)
+                            if (!isLongPressing) {
+                                changeSpeed(i: 5)
+                            }
                 })
             }
             Spacer()
@@ -178,10 +165,10 @@ struct ActionPedalsView: View {
 
 struct ActionSpeedometerView: View {
     
-    @Binding var speed: Double
+    @Binding var car: Car
     
     var body: some View {
-        SpeedometerView(speed: $speed)
+        SpeedometerView(car: $car)
             .frame(width: CarControlViewConstants.SPEEDOMETER_SIZE, height: CarControlViewConstants.SPEEDOMETER_SIZE)
             .padding()
     }
@@ -206,8 +193,6 @@ struct CarControlView: View {
     @Binding public var camera: Camera
     
     @State private var transmission: TransmissionView.TransmissionType = .drive
-    @State private var speed: Double = 0.0
-    
     @State private var decreaseTimer: Timer?
     
     var body: some View {
@@ -215,26 +200,32 @@ struct CarControlView: View {
             HStack {
                 ActionBatteryView(settings: $settings)
                 Spacer()
-                ActionSpeedometerView(speed: $speed)
+                ActionSpeedometerView(car: $car)
                 Spacer()
-                ActionTransmissionView(speed: $speed, transmission: $transmission, camera: $camera)
+                ActionTransmissionView(car: $car, transmission: $transmission, camera: $camera)
             }
             Spacer()
             HStack {
                 VStack {
                     Spacer()
-                    ActionPedalsView(speed: $speed, transmission: $transmission)
+                    ActionPedalsView(car: $car, transmission: $transmission)
                 }
                 VStack {
                     Spacer()
-                    ActionWheelView(client: $client, car: $car, settings: $settings, speed: $speed, transmission: $transmission)
+                    ActionWheelView(client: $client, car: $car, settings: $settings, transmission: $transmission)
                 }
             }
         }
         .onLoad {
             self.decreaseTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { _ in
-                let s = self.speed + Double(-1)
-                self.speed = s > 100 ? 100 : s < 0 ? 0 : s
+                let s = car.getSpeed() - 1
+
+                var speed = s > 100 ? 100 : s < 0 ? 0 : s
+                
+                speed = transmission == .reverse ? -speed :
+                transmission == .parking ? 0.0 : speed
+
+                car.setSpeed(speed: speed)
             })
         }
     }

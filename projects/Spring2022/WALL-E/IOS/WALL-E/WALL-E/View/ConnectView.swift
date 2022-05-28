@@ -8,6 +8,8 @@
 import Foundation
 import SwiftUI
 
+
+/// Custom data input
 struct CustomFieldStyle: TextFieldStyle {
     public func _body(configuration: TextField<Self._Label>) -> some View {
         configuration
@@ -18,6 +20,8 @@ struct CustomFieldStyle: TextFieldStyle {
     }
 }
 
+
+/// Fields: host, port and camera adresses
 struct DataView: View {
     @Binding public var host: String
     @Binding public var port: String
@@ -66,6 +70,8 @@ struct DataView: View {
     }
 }
 
+
+/// Connect button
 struct ButtonView: View {
     @Binding public var host: String
     @Binding public var port: String
@@ -96,6 +102,8 @@ struct ButtonView: View {
     }
 }
 
+
+/// View for connection with server
 struct ConnectView: View {
     @Binding public var client: Client
     @Binding public var host: String
