@@ -68,10 +68,10 @@ public final class ArduinoServer implements Runnable {
                             logger.info("Got from arduino: " + fromArduino);
                             clientWriter.write(fromArduino);
                         } else {
-                            logger.info("Got from arduino: " + prevFromArduino);
+                            logger.info("Prev got from arduino: " + prevFromArduino);
                             clientWriter.write(prevFromArduino);
                         }
-                        clientWriter.newLine();//only for Java client, should be removed
+                        clientWriter.newLine();
                         clientWriter.flush();
                         prevFromArduino = fromArduino;
 
@@ -107,7 +107,7 @@ public final class ArduinoServer implements Runnable {
 
     private void setCarValues(String input) {
         String TERMINATOR = "s";
-        arduino.setComPortTimeouts(SerialPort.TIMEOUT_SCANNER, 0, 0);
+        arduino.setComPortTimeouts(SerialPort.TIMEOUT_SCANNER, 1, 1);
         arduinoWriter.print(input + TERMINATOR);
         arduinoWriter.flush();
     }
