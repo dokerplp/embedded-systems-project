@@ -33,19 +33,21 @@ struct ContentView: View {
             }
         }
         .onAppear {
-                    UIDevice.current.setValue(UIInterfaceOrientation.landscapeLeft.rawValue, forKey: "orientation") // Forcing the rotation to portrait
-                    AppDelegate.orientationLock = .landscape // And making sure it stays that way
-                    DispatchQueue.global(qos: .background).async {
-                        while true {
-                            if client.isConnected() {
-                                guard let power = client.write(dir: car.getDirection(), speed: car.getSpeed()) else {continue}
-                                settings.setCharge(charge: power)
-                            }
-                        }
+            UIDevice.current.setValue(UIInterfaceOrientation.landscapeLeft.rawValue, forKey: "orientation") // Forcing the rotation to portrait
+            AppDelegate.orientationLock = .landscape // And making sure it stays that way
+            
+            DispatchQueue.global(qos: .background).async {
+                while true {
+                    if client.isConnected() {
+                        let speed = car.getTransmission() == .reverse ? -car.getSpeed(): car.getSpeed()
+                        guard let power = client.write(dir: car.getDirection(), speed: speed) else {continue}
+                        settings.setCharge(charge: power)
                     }
-                }.onDisappear {
-                    AppDelegate.orientationLock = .all // Unlocking the rotation when leaving the view
                 }
+            }
+        }.onDisappear {
+            AppDelegate.orientationLock = .all // Unlocking the rotation when leaving the view
+        }
     }
 }
 

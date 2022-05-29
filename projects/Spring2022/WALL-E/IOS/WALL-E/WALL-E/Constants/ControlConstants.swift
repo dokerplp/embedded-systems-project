@@ -32,8 +32,8 @@ struct ConnectViewConstants {
 struct BatteryViewConstants {
     public static let BATTERY_WIDTH = min(ScreenConstants.SCREEN_WIDTH * 0.35, 150)
     public static let BATTERY_HEIGHT = min(ScreenConstants.SCREEN_WIDTH * 0.15, 75)
-                                      
-                                           
+    
+    
 }
 
 ///`CarControlViewConstants` describes the size of the `CarElementsView`
@@ -43,7 +43,7 @@ struct CarControlViewConstants {
     public static let BREAK_PEDAL_HEIGHT = ControlViewConstants.BORDER_SIZE * 0.6
     public static let GAZ_PEDAL_WIDTH = ControlViewConstants.BORDER_SIZE * 0.6
     public static let GAZ_PEDAL_HEIGHT = ControlViewConstants.BORDER_SIZE * 0.3
-    public static let TRANSMISSION_SIZE = ScreenConstants.SCREEN_WIDTH * 0.2
+    public static let TRANSMISSION_SIZE = ControlViewConstants.BORDER_SIZE * 0.2
     public static let SPEEDOMETER_SIZE = ScreenConstants.SCREEN_WIDTH * 0.3
     public static let LINE_WIDTH = ControlViewConstants.BORDER_SIZE * 0.02
 }

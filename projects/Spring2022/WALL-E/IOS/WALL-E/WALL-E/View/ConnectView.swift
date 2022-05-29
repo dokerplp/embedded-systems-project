@@ -30,43 +30,43 @@ struct DataView: View {
     
     var body: some View {
         VStack {
-                HStack {
-                    TextField(
-                        "Host: ",
-                        text: $host
-                    )
-                    .disableAutocorrection(true)
-                    .padding()
-                    
-                    TextField(
-                        "Port: ",
-                        text: $port
-                    )
-                    .disableAutocorrection(true)
-                    .padding()
-                }
+            HStack {
+                TextField(
+                    "Host: ",
+                    text: $host
+                )
+                .disableAutocorrection(true)
+                .padding()
                 
-                HStack {
-                    TextField(
-                        "Front camera: ",
-                        text: $fcamera
-                    )
-                    .disableAutocorrection(true)
-                    .padding()
-                    
-                    TextField(
-                        "Back camera: ",
-                        text: $bcamera
-                    )
-                    .disableAutocorrection(true)
-                    .padding()
-                }
-
+                TextField(
+                    "Port: ",
+                    text: $port
+                )
+                .disableAutocorrection(true)
+                .padding()
             }
-            .textFieldStyle(
-                CustomFieldStyle()
-            )
-            .frame(width: ConnectViewConstants.DATA_FIELD_SIZE)
+            
+            HStack {
+                TextField(
+                    "Front camera: ",
+                    text: $fcamera
+                )
+                .disableAutocorrection(true)
+                .padding()
+                
+                TextField(
+                    "Back camera: ",
+                    text: $bcamera
+                )
+                .disableAutocorrection(true)
+                .padding()
+            }
+            
+        }
+        .textFieldStyle(
+            CustomFieldStyle()
+        )
+        .frame(width: ConnectViewConstants.DATA_FIELD_SIZE)
     }
 }
 
@@ -123,7 +123,7 @@ struct ConnectView: View {
 
 struct ConnectView_Previews: PreviewProvider {
     static var previews: some View {
-    
+        
         ConnectView(client: .constant(Client()), host: .constant("127.0.0.1"), port: .constant("2113"), fcamera: .constant("127.0.0.1"), bcamera: .constant("127.0.0.1"))
             .preferredColorScheme(.dark)
             .previewInterfaceOrientation(.landscapeRight)
