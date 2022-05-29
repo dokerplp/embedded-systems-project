@@ -12,7 +12,16 @@
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
+
+        <pi.host>192.168.0.103</pi.host>
+        <pi.port>22</pi.port>
+        <pi.user>pi</pi.user>
+        <pi.password>pi</pi.password>
+        <pi.deployDirectory>/home/pi/server</pi.deployDirectory>
+        <pi.main.class>itmo.zavar.car.Launcher</pi.main.class>
+
     </properties>
+
 
     <dependencies>
         <dependency>
@@ -44,7 +53,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>itmo.zavar.car.Launcher</mainClass>
+                            <mainClass>${pi.main.class}</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
@@ -60,6 +69,74 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+            <!-- This plugin will generate JAR MANIFEST file inside the JAR in order to make our applicationeasily runnable -->
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>${pi.main.class}</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-my-jar-with-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--This plugin will Transfer the executable JAR file to the Pi and runs it -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <!-- ensure the target directory exists on the Raspberry Pi -->
+                                <sshexec host="${pi.host}" port="${pi.port}" username="${pi.user}" password="${pi.password}"
+                                         trust="true" failonerror="false" verbose="true"
+                                         command="mkdir --parents ${pi.deployDirectory}"/>
+
+                                <!-- copy the JAR file to the Raspberry Pi -->
+                                <scp
+                                        file="${project.build.directory}/${project.build.finalName}-jar-with-dependencies.jar"
+                                        todir="${pi.user}:${pi.password}@${pi.host}:${pi.deployDirectory}"
+                                        port="${pi.port}" trust="true" verbose="true" failonerror="true">
+                                </scp>
+
+                                <!-- run the JAR file on the Raspberry Pi -->
+<!--                                <sshexec host="${pi.host}" port="${pi.port}" username="${pi.user}"-->
+<!--                                         password="${pi.password}" trust="true" failonerror="false"-->
+<!--                                         verbose="true"-->
+<!--                                         command="/home/pi/.sdkman/candidates/java/17.0.1-librca/bin/java -jar ${pi.deployDirectory}/${project.build.finalName}-jar-with-dependencies.jar /dev/ttyUSB0"/>-->
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.ant</groupId>
+                        <artifactId>ant-jsch</artifactId>
+                        <version>1.9.6</version>
+                    </dependency>
+                </dependencies>
             </plugin>
 
         </plugins>
