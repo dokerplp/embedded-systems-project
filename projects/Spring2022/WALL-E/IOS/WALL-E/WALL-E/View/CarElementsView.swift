@@ -221,6 +221,10 @@ struct CircleWithLetter: View {
     public let color: Color
     public let letter: String
     
+    public var transmission: TransmissionView.TransmissionType
+    
+    @Binding public var car: Car
+    
     var body: some View {
         
         Circle()
@@ -229,7 +233,7 @@ struct CircleWithLetter: View {
                 Circle()
                     .stroke(lineWidth: 5)
                     .fill(
-                        Color("BorderStick")
+                        Color(transmission == car.transmission ? "Black" : "Gray")
                     ).overlay(
                         Text(letter)
                             .font(.title)
@@ -261,13 +265,13 @@ struct TransmissionView: View {
     
     var body: some View {
         VStack {
-            switch car.getTransmission() {
+            switch car.transmission {
             case .drive1:
-                CircleWithLetter(color: .green, letter: "D")
+                CircleWithLetter(color: .green, letter: "D", transmission: .drive1, car: $car)
             case .reverse:
-                CircleWithLetter(color: .red, letter: "R")
+                CircleWithLetter(color: .red, letter: "R", transmission: .reverse, car: $car)
             default:
-                CircleWithLetter(color: .blue, letter: "P")
+                CircleWithLetter(color: .blue, letter: "P", transmission: .parking, car: $car)
             }
         }
         .frame(width: CarControlViewConstants.TRANSMISSION_SIZE, height: CarControlViewConstants.TRANSMISSION_SIZE)
@@ -292,7 +296,7 @@ struct SpeedometerView: View {
                     )
             )
             .overlay(
-                Text("\(Int(car.getSpeed()))\nmph")
+                Text("\(Int(car.speed))\nmph")
                     .font(.title)
                     .fontWeight(.bold)
                     .foregroundColor(Color.white)

@@ -14,8 +14,8 @@ struct ContentView: View {
     @State private var port = "25565"
     
     @State private var camera: Camera = .front
-    @State private var fcamera: String = "http://172.20.10.4:8081/"
-    @State private var bcamera: String = "http://172.20.10.4:8082/"
+    @State private var fcamera: String = "172.20.10.4:8081"
+    @State private var bcamera: String = "172.20.10.4:8082"
     
     @State private var client: Client = Client()
     @State private var car: Car = Car()
@@ -39,8 +39,8 @@ struct ContentView: View {
             DispatchQueue.global(qos: .background).async {
                 while true {
                     if client.isConnected() {
-                        let speed = car.getTransmission() == .reverse ? -car.getSpeed(): car.getSpeed()
-                        guard let power = client.write(dir: car.getDirection(), speed: speed) else {continue}
+                        let speed = car.transmission == .reverse ? -car.speed: car.speed
+                        guard let power = client.write(dir: car.direction, speed: speed) else {continue}
                         settings.setCharge(charge: power)
                     }
                 }

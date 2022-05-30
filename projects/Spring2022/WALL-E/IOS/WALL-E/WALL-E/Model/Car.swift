@@ -14,34 +14,13 @@ struct Car {
     ///
     /// if direction is less than 0 then car goes left
     /// otherwise car goes right
-    private var direction: Double = 0
+    public var direction: Double = 0
     /// Car speed
     ///
     /// if speed is less than 0 then car goes back
     /// otherwise car goes forward
-    private var speed: Double = 0
-    private var transmission: TransmissionView.TransmissionType = .drive1
-    
-    public mutating func setDirection(dir: Double) {
-        self.direction = dir
-    }
-    public mutating func setSpeed(speed: Double) {
-        self.speed = speed
-    }
-    public mutating func setTransmission(transmission: TransmissionView.TransmissionType) {
-        self.transmission = transmission
-    }
-    
-    public func getDirection() -> Double {
-        return direction
-    }
-    public func getSpeed() -> Double {
-        return speed
-    }
-    
-    public func getTransmission() -> TransmissionView.TransmissionType {
-        return transmission
-    }
+    public var speed: Double = 0
+    public var transmission: TransmissionView.TransmissionType = .drive1
     
     public func getMaxSpeed() -> Double {
         switch transmission {
@@ -52,7 +31,7 @@ struct Car {
         case .drive3:
             return 100
         case .reverse:
-            return 50
+            return 100
         case .parking:
             return 10
         default:

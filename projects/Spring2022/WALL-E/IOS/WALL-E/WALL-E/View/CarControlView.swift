@@ -10,6 +10,7 @@ import SwiftUI
 import simd
 
 
+
 /// Allows `WheelView`  to turn and send data
 struct ActionWheelView: View {
     
@@ -45,7 +46,7 @@ struct ActionWheelView: View {
         if (rotate >= -100 && rotate <= 100) {
             viewState.width = rotate
         }
-        car.setDirection(dir: viewState.width / 100)
+        car.direction = viewState.width / 100
     }
     
     
@@ -59,7 +60,7 @@ struct ActionWheelView: View {
                 }.onEnded { value in
                     withAnimation(.spring()) {
                         viewState = .zero
-                        car.setDirection(dir: 0.0)
+                        car.direction = 0
                     }
                 }
             )
@@ -71,48 +72,55 @@ struct ActionTransmissionView: View {
     @Binding public var car: Car
     @Binding public var camera: Camera
     
-    
     var body: some View {
         
         
         VStack {
             HStack {
                 Button(action: {
-                    car.setSpeed(speed: 0)
-                    car.setTransmission(transmission: .drive1)
+                    car.speed = 0
+                    car.transmission = .drive1
                 }, label: {
-                    CircleWithLetter(color: .green, letter: "D1")
+                    CircleWithLetter(color: .green, letter: "D1", transmission: .drive1, car: $car)
                         .frame(width: CarControlViewConstants.TRANSMISSION_SIZE, height: CarControlViewConstants.TRANSMISSION_SIZE)
+                  
                 })
                 Button(action: {
-                    car.setSpeed(speed: 0)
-                    car.setTransmission(transmission: .drive2)
+                    car.speed = 0
+                    car.transmission = .drive2
                 }, label: {
-                    CircleWithLetter(color: .yellow, letter: "D2")
+                    CircleWithLetter(color: .yellow, letter: "D2", transmission: .drive2, car: $car)
                         .frame(width: CarControlViewConstants.TRANSMISSION_SIZE, height: CarControlViewConstants.TRANSMISSION_SIZE)
+                        .padding(.horizontal, 6.0)
+      
                 })
                 Button(action: {
-                    car.setSpeed(speed: 0)
-                    car.setTransmission(transmission: .drive3)
+                    car.speed = 0
+                    car.transmission = .drive3
                 }, label: {
-                    CircleWithLetter(color: .orange, letter: "D3")
+                    CircleWithLetter(color: .orange, letter: "D3", transmission: .drive3, car: $car)
                         .frame(width: CarControlViewConstants.TRANSMISSION_SIZE, height: CarControlViewConstants.TRANSMISSION_SIZE)
+                        
                 })
             }
             HStack {
                 Button(action: {
-                    car.setSpeed(speed: 0)
-                    car.setTransmission(transmission: .reverse)
+                    car.speed = 0
+                    car.transmission =  .reverse
                 }, label: {
-                    CircleWithLetter(color: .red, letter: "R")
+                    CircleWithLetter(color: .red, letter: "R", transmission: .reverse, car: $car)
+                        .padding(.trailing, 3.0)
                         .frame(width: CarControlViewConstants.TRANSMISSION_SIZE, height: CarControlViewConstants.TRANSMISSION_SIZE)
+         
                 })
                 Button(action: {
-                    car.setSpeed(speed: 0)
-                    car.setTransmission(transmission: .parking)
+                    car.speed = 0
+                    car.transmission = .parking
                 }, label: {
-                    CircleWithLetter(color: .blue, letter: "P")
+                    CircleWithLetter(color: .blue, letter: "P", transmission: .parking, car: $car)
+                        .padding(.leading, 3.0)
                         .frame(width: CarControlViewConstants.TRANSMISSION_SIZE, height: CarControlViewConstants.TRANSMISSION_SIZE)
+                
                 })
             }
         }
@@ -128,11 +136,11 @@ struct ActionPedalsView: View {
     @State private var isLongPressing = false
     
     func changeSpeed(i: Int) {
-        if (car.getTransmission() != .parking) {
+        if (car.transmission != .parking) {
             self.isLongPressing = true
             self.timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { _ in
-                let s = car.getSpeed() + Double(i)
-                car.setSpeed(speed: s > car.getMaxSpeed() ? car.getMaxSpeed() : s < 0 ? 0 : s)
+                let s = car.speed + Double(i)
+                car.speed = s > car.getMaxSpeed() ? car.getMaxSpeed() : s < 0 ? 0 : s
             })
         }
     }
@@ -241,9 +249,9 @@ struct CarControlView: View {
         }
         .onLoad {
             self.decreaseTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { _ in
-                let s = car.getSpeed() - 1
+                let s = car.speed - 1
                 let speed = s > car.getMaxSpeed() ? car.getMaxSpeed() : s < 0 ? 0 : s
-                car.setSpeed(speed: speed)
+                car.speed = speed
             })
         }
     }
@@ -252,6 +260,6 @@ struct CarControlView: View {
 struct CarControlView_Previews: PreviewProvider {
     static var previews: some View {
         CarControlView(client: .constant(Client()), car: .constant(Car()), settings: .constant(Settings()), camera: .constant(.front))
-            .previewInterfaceOrientation(.landscapeLeft)
+            .previewInterfaceOrientation(.landscapeRight)
     }
 }
