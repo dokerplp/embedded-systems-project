@@ -58,15 +58,17 @@ public final class CarController implements Runnable {
                     esc.writeMicroseconds(map((int) (inputSpeed * mul), -mul, 0, BACKWARD_MAX, BACKWARD_MIN));
                 else {
                     if(prevSpeed > 0) {
-                        toStop = System.nanoTime();
+                        toStop = System.currentTimeMillis();
                         esc.writeMicroseconds(FORWARD_BRAKE);
-                        Thread.sleep(40);
+                        Thread.sleep(50);
                     } else if(prevSpeed < 0) {
-                        toStop = System.nanoTime();
+                        toStop = System.currentTimeMillis();
                         esc.writeMicroseconds(BACKWARD_BRAKE);
-                        Thread.sleep(40);
+                        Thread.sleep(250);
+                        esc.writeMicroseconds(BACKWARD_MIN);
+                        prevSpeed = 0;
                     }
-                    if(System.nanoTime() - toStop >= 1000) {
+                    if(System.currentTimeMillis() - toStop >= 1000) {
                         esc.writeMicroseconds(STOP);
                     }
                 }
@@ -75,9 +77,6 @@ public final class CarController implements Runnable {
                     steering.setAngle(ROTATE_ZERO);
                 else
                     steering.setAngle(map((int) (inputAngle * mul), -mul, mul, ROTATE_LEFT_MAX, ROTATE_RIGHT_MAX));
-
-                prevAngle = inputAngle;
-                prevSpeed = inputSpeed;
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -93,10 +92,12 @@ public final class CarController implements Runnable {
     }
 
     public void setInputSpeed(float inputSpeed) {
+        prevSpeed = this.inputSpeed;
         this.inputSpeed = inputSpeed;
     }
 
     public void setInputWheelAngle(float inputAngle) {
+        prevAngle = this.inputAngle;
         this.inputAngle = inputAngle;
     }
 
