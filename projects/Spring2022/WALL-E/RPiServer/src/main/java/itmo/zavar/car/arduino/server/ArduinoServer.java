@@ -1,4 +1,4 @@
-package itmo.zavar.car.server;
+package itmo.zavar.car.arduino.server;
 
 import com.fazecast.jSerialComm.SerialPort;
 
@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
+import com.fazecast.jSerialComm.SerialPortInvalidPortException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -92,6 +93,8 @@ public final class ArduinoServer implements Runnable {
                 logger.error("Can't connect to the client");
                 logger.error(e.getMessage());
                 setCarValues("0:0");
+            } catch (SerialPortInvalidPortException e) {
+                logger.error("Port name is invalid");
             }
         }
         try {
