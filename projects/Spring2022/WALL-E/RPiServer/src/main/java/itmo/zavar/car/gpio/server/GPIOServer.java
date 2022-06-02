@@ -1,7 +1,5 @@
 package itmo.zavar.car.gpio.server;
 
-import com.fazecast.jSerialComm.SerialPort;
-import itmo.zavar.car.arduino.server.ArduinoServer;
 import itmo.zavar.car.gpio.controller.CarController;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -9,8 +7,6 @@ import org.apache.logging.log4j.Logger;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.NoSuchElementException;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -24,10 +20,10 @@ public class GPIOServer implements Runnable {
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
-    public GPIOServer(int serverPort, int escPin, int steeringPin) throws IOException {
+    public GPIOServer(int serverPort, int escPin, int steeringPin, int batteryAddress) throws IOException {
         this.serverPort = serverPort;
         serverSocket = new ServerSocket(serverPort);
-        carController = new CarController(escPin, steeringPin);
+        carController = new CarController(escPin, steeringPin, batteryAddress);
     }
 
     @Override
@@ -42,8 +38,7 @@ public class GPIOServer implements Runnable {
                 logger.info("Accepted connection");
 
                 String input;
-                String prevInput = "";
-                String fromGpio = "0-0";
+                String fromGpio;
 
                 while (!client.isClosed()) {
                     try {
@@ -55,7 +50,7 @@ public class GPIOServer implements Runnable {
                         } else {
                             throw new IOException("Connection reset");
                         }
-
+                        fromGpio = carController.getBatteryValue();
                         logger.info("Got from gpio: " + fromGpio);
                         clientWriter.write(fromGpio);
                         clientWriter.newLine();

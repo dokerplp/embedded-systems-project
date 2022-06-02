@@ -2,6 +2,8 @@ package itmo.zavar.car.gpio.controller;
 
 import com.pi4j.Pi4J;
 import com.pi4j.context.Context;
+import com.pi4j.io.i2c.I2C;
+import com.pi4j.io.i2c.I2CConfigBuilder;
 import com.pi4j.library.pigpio.PiGpio;
 import com.pi4j.plugin.pigpio.provider.gpio.digital.PiGpioDigitalInputProvider;
 import com.pi4j.plugin.pigpio.provider.gpio.digital.PiGpioDigitalOutputProvider;
@@ -29,18 +31,26 @@ public final class CarController implements Runnable {
 
     public final ServoMotorComponent esc;
     public final ServoMotorComponent steering;
-
+    public final I2C battery;
     private volatile float inputSpeed = 0.0F;
     private volatile float inputAngle = 0.0F;
     private float prevSpeed = 0.0F;
     private float prevAngle = 0.0F;
+    private volatile String batteryValue = "0-0";
 
-    public CarController(int escPin, int steeringPin) {
-        Context context = buildNewContext();
+    public CarController(int escPin, int steeringPin, int batteryAddress) {
+        PiGpio piGpio = PiGpio.newNativeInstance();
+        Context context = buildNewContext(piGpio);
         esc = new ServoMotorComponent(context, escPin);
         esc.writeMicroseconds(STOP);
         steering = new ServoMotorComponent(context, steeringPin);
         steering.setAngle(ROTATE_ZERO);
+        battery = PiGpioI2CProvider.newInstance(piGpio).create(
+                I2CConfigBuilder.newInstance(context).
+                        bus(1).
+                        device(batteryAddress).
+                        id(String.valueOf(batteryAddress)).
+                        build());
     }
 
     @Override
@@ -49,6 +59,7 @@ public final class CarController implements Runnable {
             long toStop = 0;
             int mul = 1000;
             while (!Thread.currentThread().isInterrupted()) {
+                batteryValue = new String(battery.readCharArray(7)).replaceAll("[^A-Za-zА-Яа-я0-9\\-]", "");
                 if (inputSpeed < 0 && prevSpeed >= 0)
                     switchToBackward();
 
@@ -91,6 +102,10 @@ public final class CarController implements Runnable {
         inputAngle = 0;
     }
 
+    public String getBatteryValue() {
+        return batteryValue;
+    }
+
     public void setInputSpeed(float inputSpeed) {
         prevSpeed = this.inputSpeed;
         this.inputSpeed = inputSpeed;
@@ -115,8 +130,7 @@ public final class CarController implements Runnable {
         return (val - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
     }
 
-    private Context buildNewContext() {
-        PiGpio piGpio = PiGpio.newNativeInstance();
+    private Context buildNewContext(PiGpio piGpio) {
         return Pi4J.newContextBuilder()
                 .noAutoDetect()
                 .add(new RaspberryPiPlatform())
