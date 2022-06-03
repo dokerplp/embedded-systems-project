@@ -3,6 +3,7 @@ package ru.zavar.carcontroller;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -23,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 public class ControlActivity extends Activity {
@@ -98,35 +100,6 @@ public class ControlActivity extends Activity {
                 switchToBackCamera();
         });
 
-        Button transmission = findViewById(R.id.transmission);
-        tcpClient.setTransmissionMode(TransmissionMode.PARK);
-        transmission.setBackgroundColor(Color.CYAN);
-        transmission.setText("P");
-
-        transmission.setOnClickListener(v -> {
-            transmission.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
-            tcpClient.nextTransmissionMode();
-            switch (tcpClient.getTransmissionMode()) {
-                case PARK:
-                    switchToFrontCamera();
-                    transmission.setBackgroundColor(Color.CYAN);
-                    tcpClient.setTransmissionMode(TransmissionMode.PARK);
-                    transmission.setText("P");
-                    break;
-                case DRIVE:
-                    switchToFrontCamera();
-                    transmission.setBackgroundColor(Color.GREEN);
-                    tcpClient.setTransmissionMode(TransmissionMode.DRIVE);
-                    transmission.setText("D");
-                    break;
-                case REVERSE:
-                    switchToBackCamera();
-                    transmission.setBackgroundColor(Color.RED);
-                    tcpClient.setTransmissionMode(TransmissionMode.REVERSE);
-                    transmission.setText("R");
-                    break;
-            }
-        });
 
         SeekBar gas = findViewById(R.id.gas);
         gas.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -148,15 +121,94 @@ public class ControlActivity extends Activity {
             }
         });
 
-        ToggleButton nitro = findViewById(R.id.toggle_nitro);
-        nitro.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if(isChecked) {
-                nitro.performHapticFeedback(HapticFeedbackConstants.REJECT);
-                gas.setMax(100);
+        SeekBar transmission = findViewById(R.id.transmission);
+        TextView textD3 = findViewById(R.id.textD3);
+        TextView textD2 = findViewById(R.id.textD2);
+        TextView textD1 = findViewById(R.id.textD1);
+        TextView textR = findViewById(R.id.textR);
+        TextView textP = findViewById(R.id.textP);
+        tcpClient.setTransmissionMode(TransmissionMode.PARK);
+        textP.setBackgroundColor(Color.CYAN);
+        textR.setBackgroundColor(Color.GRAY);
+        textD1.setBackgroundColor(Color.GRAY);
+        textD2.setBackgroundColor(Color.GRAY);
+        textD3.setBackgroundColor(Color.GRAY);
+        transmission.setProgress(0);
+        transmission.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                switch (progress) {
+                    case 0:
+                        gas.setMax(100);
+                        tcpClient.setTransmissionMode(TransmissionMode.PARK);
+                        textP.setBackgroundColor(Color.CYAN);
+                        textR.setBackgroundColor(Color.GRAY);
+                        textD1.setBackgroundColor(Color.GRAY);
+                        textD2.setBackgroundColor(Color.GRAY);
+                        textD3.setBackgroundColor(Color.GRAY);
+                        switchToFrontCamera();
+                        seekBar.performHapticFeedback(HapticFeedbackConstants.CONTEXT_CLICK);
+                        break;
+                    case 1:
+                        gas.setMax(100);
+                        tcpClient.setTransmissionMode(TransmissionMode.REVERSE);
+                        textP.setBackgroundColor(Color.GRAY);
+                        textR.setBackgroundColor(Color.RED);
+                        textD1.setBackgroundColor(Color.GRAY);
+                        textD2.setBackgroundColor(Color.GRAY);
+                        textD3.setBackgroundColor(Color.GRAY);
+                        switchToBackCamera();
+                        seekBar.performHapticFeedback(HapticFeedbackConstants.CONTEXT_CLICK);
+                        break;
+                    case 2:
+                        gas.setMax(50);
+                        tcpClient.setTransmissionMode(TransmissionMode.DRIVE);
+                        textP.setBackgroundColor(Color.GRAY);
+                        textR.setBackgroundColor(Color.GRAY);
+                        textD1.setBackgroundColor(Color.GREEN);
+                        textD2.setBackgroundColor(Color.GRAY);
+                        textD3.setBackgroundColor(Color.GRAY);
+                        switchToFrontCamera();
+                        seekBar.performHapticFeedback(HapticFeedbackConstants.CONTEXT_CLICK);
+                        break;
+                    case 3:
+                        gas.setMax(70);
+                        tcpClient.setTransmissionMode(TransmissionMode.DRIVE);
+                        textP.setBackgroundColor(Color.GRAY);
+                        textR.setBackgroundColor(Color.GRAY);
+                        textD1.setBackgroundColor(Color.GRAY);
+                        textD2.setBackgroundColor(Color.YELLOW);
+                        textD3.setBackgroundColor(Color.GRAY);
+                        switchToFrontCamera();
+                        seekBar.performHapticFeedback(HapticFeedbackConstants.CONTEXT_CLICK);
+                        break;
+                    case 4:
+                        gas.setMax(100);
+                        tcpClient.setTransmissionMode(TransmissionMode.DRIVE);
+                        textP.setBackgroundColor(Color.GRAY);
+                        textR.setBackgroundColor(Color.GRAY);
+                        textD1.setBackgroundColor(Color.GRAY);
+                        textD2.setBackgroundColor(Color.GRAY);
+                        textD3.setBackgroundColor(Color.parseColor("#FF9800"));
+                        switchToFrontCamera();
+                        seekBar.performHapticFeedback(HapticFeedbackConstants.CONTEXT_CLICK);
+                        break;
+                }
             }
-            else
-                gas.setMax(80);
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
         });
+
+
 
         SeekBar rotation = findViewById(R.id.rotation);
         rotation.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
