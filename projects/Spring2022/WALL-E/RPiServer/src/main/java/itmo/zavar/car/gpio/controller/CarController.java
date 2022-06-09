@@ -13,9 +13,6 @@ import com.pi4j.plugin.pigpio.provider.serial.PiGpioSerialProvider;
 import com.pi4j.plugin.pigpio.provider.spi.PiGpioSpiProvider;
 import com.pi4j.plugin.raspberrypi.platform.RaspberryPiPlatform;
 import itmo.zavar.car.gpio.component.ServoMotorComponent;
-import itmo.zavar.car.gpio.server.GPIOServer;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public final class CarController implements Runnable {
     private final int STOP = 1550;
@@ -24,10 +21,10 @@ public final class CarController implements Runnable {
     private final static int FORWARD_MIN = 1610;
     private final static int BACKWARD_BRAKE = 1590;
     private final static int BACKWARD_MAX = 1490;
-    private final static int BACKWARD_MIN = 1520;
+    private final static int BACKWARD_MIN = 1518;
     private final static int ROTATE_RIGHT_MAX = 95;
-    private final static int ROTATE_ZERO = 125;
-    private final static int ROTATE_LEFT_MAX = 150;
+    private final static int ROTATE_ZERO = 128;
+    private final static int ROTATE_LEFT_MAX = 160;
 
     public final ServoMotorComponent esc;
     public final ServoMotorComponent steering;
