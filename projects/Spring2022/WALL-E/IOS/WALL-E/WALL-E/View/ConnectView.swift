@@ -36,14 +36,13 @@ struct DataView: View {
                     text: $host
                 )
                 .disableAutocorrection(true)
-                .padding()
+        
                 
                 TextField(
                     "Port: ",
                     text: $port
                 )
                 .disableAutocorrection(true)
-                .padding()
             }
             
             HStack {
@@ -52,14 +51,14 @@ struct DataView: View {
                     text: $fcamera
                 )
                 .disableAutocorrection(true)
-                .padding()
+        
                 
                 TextField(
                     "Back camera: ",
                     text: $bcamera
                 )
                 .disableAutocorrection(true)
-                .padding()
+        
             }
             
         }
@@ -84,11 +83,11 @@ struct ButtonView: View {
                 client.connect(host: host, port: p)
             }
         ) {
-            Circle()
+            RoundedRectangle(cornerSize: CGSize(width: ConnectViewConstants.BUTTON_RADIUS, height: ConnectViewConstants.BUTTON_RADIUS))
                 .fill(
                     Color.green
                 )
-                .frame(width: ConnectViewConstants.BUTTON_SIZE, height: ConnectViewConstants.BUTTON_SIZE)
+                .frame(width: ConnectViewConstants.BUTTON_WIDTH, height: ConnectViewConstants.BUTTON_HEIGHT)
                 .overlay(
                     Text("Connect")
                         .font(.largeTitle)
@@ -113,10 +112,8 @@ struct ConnectView: View {
     
     var body: some View {
         VStack {
-            Spacer()
             DataView(host: $host, port: $port, fcamera: $fcamera, bcamera: $bcamera)
             ButtonView(host: $host, port: $port, client: $client)
-            Spacer()
         }
     }
 }

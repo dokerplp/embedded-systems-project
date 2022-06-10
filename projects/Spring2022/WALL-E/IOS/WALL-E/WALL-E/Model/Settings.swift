@@ -21,10 +21,12 @@ struct Settings {
     
     public mutating func setCharge(charge: String) {
         let batteries = charge.components(separatedBy: "-")
-        let charge1 = getPower(charge: String(batteries[0].filter { !" \n\t\r".contains($0) }))
-        let charge2 = getPower(charge: String(batteries[1].filter { !" \n\t\r".contains($0) }))
-        
-        self.battery1 = charge1 != -1 ? charge1 : battery1
-        self.battery2 = charge2 != -1 ? charge2 : battery2
+        if (batteries != nil && batteries.count == 2) {
+            let charge1 = getPower(charge: String(batteries[0].filter { !" \n\t\r".contains($0) }))
+            let charge2 = getPower(charge: String(batteries[1].filter { !" \n\t\r".contains($0) }))
+            
+            self.battery1 = charge1 != -1 ? charge1 : battery1
+            self.battery2 = charge2 != -1 ? charge2 : battery2
+        }
     }
 }

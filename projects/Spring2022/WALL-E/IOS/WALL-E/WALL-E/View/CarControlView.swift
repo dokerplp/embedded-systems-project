@@ -80,6 +80,7 @@ struct ActionTransmissionView: View {
                 Button(action: {
                     car.speed = 0
                     car.transmission = .drive1
+                    camera = .front
                 }, label: {
                     CircleWithLetter(color: .green, letter: "D1", transmission: .drive1, car: $car)
                         .frame(width: CarControlViewConstants.TRANSMISSION_SIZE, height: CarControlViewConstants.TRANSMISSION_SIZE)
@@ -88,6 +89,7 @@ struct ActionTransmissionView: View {
                 Button(action: {
                     car.speed = 0
                     car.transmission = .drive2
+                    camera = .front
                 }, label: {
                     CircleWithLetter(color: .yellow, letter: "D2", transmission: .drive2, car: $car)
                         .frame(width: CarControlViewConstants.TRANSMISSION_SIZE, height: CarControlViewConstants.TRANSMISSION_SIZE)
@@ -97,6 +99,7 @@ struct ActionTransmissionView: View {
                 Button(action: {
                     car.speed = 0
                     car.transmission = .drive3
+                    camera = .front
                 }, label: {
                     CircleWithLetter(color: .orange, letter: "D3", transmission: .drive3, car: $car)
                         .frame(width: CarControlViewConstants.TRANSMISSION_SIZE, height: CarControlViewConstants.TRANSMISSION_SIZE)
@@ -107,6 +110,7 @@ struct ActionTransmissionView: View {
                 Button(action: {
                     car.speed = 0
                     car.transmission =  .reverse
+                    camera = .back
                 }, label: {
                     CircleWithLetter(color: .red, letter: "R", transmission: .reverse, car: $car)
                         .padding(.trailing, 3.0)
@@ -116,6 +120,7 @@ struct ActionTransmissionView: View {
                 Button(action: {
                     car.speed = 0
                     car.transmission = .parking
+                    camera = .front
                 }, label: {
                     CircleWithLetter(color: .blue, letter: "P", transmission: .parking, car: $car)
                         .padding(.leading, 3.0)
