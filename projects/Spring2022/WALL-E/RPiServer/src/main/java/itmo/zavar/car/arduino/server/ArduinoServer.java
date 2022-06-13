@@ -12,6 +12,14 @@ import com.fazecast.jSerialComm.SerialPortInvalidPortException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * Server implementation for TCP client and for sending data to Arduino via serial port. Sends battery values (format: 'v1-v2') in
+ * range [0; 100] and receives speed (s) and steering angle (a) (format: 's-a') in range [-1; 1] where 0 is
+ * neutral position (or brake).
+ *
+ * It's deprecated because of unstable work of serial port, be carefully!
+ */
+@Deprecated
 public final class ArduinoServer implements Runnable {
 
     private final Logger logger = LogManager.getLogger(ArduinoServer.class.getName());

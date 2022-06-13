@@ -5,8 +5,15 @@ import com.pi4j.io.pwm.Pwm;
 import com.pi4j.io.pwm.PwmConfig;
 import com.pi4j.io.pwm.PwmType;
 
+/**
+ * Implementation of servo controller for raspberry pi using gpio.
+ * Got from GitHub - pi4j-example-crowpi.
+ *
+ * @version 1.1
+ * @author Zavar30
+ */
 public final class ServoMotorComponent {
-    private final static int DEFAULT_FREQUENCY = 60;
+    private final static int DEFAULT_FREQUENCY = 60;//IMPORTANT! Works correctly only at 60HZ
     private final static float DEFAULT_MIN_ANGLE = 0;
     private final static float DEFAULT_MAX_ANGLE = 180;
     private final static float DEFAULT_MIN_DUTY_CYCLE = 2;
@@ -31,7 +38,7 @@ public final class ServoMotorComponent {
      * This can be used if the servo bundled with the CrowPi should for some reason have values which are totally off.
      *
      * @param pi4j         Pi4J context
-     *                     @param address      Custom BCM pin address
+     * @param address      Custom BCM pin address
      * @param minAngle     Minimum angle in degrees
      * @param maxAngle     Maximum angle in degrees
      * @param minDutyCycle Minimum duty cycle as float, between 0 and 100
@@ -60,10 +67,18 @@ public final class ServoMotorComponent {
         this.maxDutyCycle = maxDutyCycle;
     }
 
+    /**
+     * Sets steering angle in range: [0; 180]
+     * @param angle Angle to set
+     */
     public void setAngle(float angle) {
         pwm.on(mapAngleToDutyCycle(angle));
     }
 
+    /**
+     * Writes ms (like in Servo.h of Arduino Library) in range: [1000; 2000]
+     * @param value Value to write
+     */
     public void writeMicroseconds(int value) {
         int DEFAULT_MIN_MICROSECONDS = 1000;
         int DEFAULT_MAX_MICROSECONDS = 2000;

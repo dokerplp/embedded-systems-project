@@ -4,6 +4,9 @@ import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
 
+/**
+ * Test client, reads from System.in and sends via TCP stream
+ */
 public class TestClient {
 
     public static void main(String[] args) throws IOException, InterruptedException {
