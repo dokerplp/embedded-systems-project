@@ -14,14 +14,21 @@ struct Settings {
     ///Battery 2 charge
     public var battery2: Int32 = 0
     
+    
+    /// Charge parser
+    /// - Parameter charge: data from server
+    /// - Returns: power from 0 to 100
     private func getPower(charge: String) -> Int32 {
         guard let battery = Int32(charge) else { return -1 }
         return battery > 100 ? 100 : battery < 0 ? 0 : battery
     }
     
+    
+    /// Updating batteries charge
+    /// - Parameter charge: data from server
     public mutating func setCharge(charge: String) {
         let batteries = charge.components(separatedBy: "-")
-        if (batteries != nil && batteries.count == 2) {
+        if (batteries.count == 2) {
             let charge1 = getPower(charge: String(batteries[0].filter { !" \n\t\r".contains($0) }))
             let charge2 = getPower(charge: String(batteries[1].filter { !" \n\t\r".contains($0) }))
             

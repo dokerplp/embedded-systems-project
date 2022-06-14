@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-///The element of `WheelView`
+///The element of ``WheelView``
 struct CustomCircle: Shape {
     public let radius: Double
     
@@ -19,7 +19,7 @@ struct CustomCircle: Shape {
     }
 }
 
-///The element of `WheelView`
+///The element of ``WheelView``
 struct Triangle: Shape {
     func path(in rect: CGRect) -> Path {
         Path { path in
@@ -65,7 +65,7 @@ struct WheelView: View {
     }
 }
 
-/// The element of `GazPedalView`
+/// The element of ``GazPedalView``
 struct GazPedal: Shape {
     func path(in rect: CGRect) -> Path {
         Path { p in
@@ -94,7 +94,7 @@ struct GazPedal: Shape {
     }
 }
 
-/// The element of `GazPedalView`
+/// The element of ``GazPedalView``
 struct GazLines: Shape {
     func path(in rect: CGRect) -> Path {
         Path { path in
@@ -133,7 +133,7 @@ struct GazPedalView: View {
     }
 }
 
-///The element of `BrakePedalView`
+///The element of ``BrakePedalView``
 struct BrakePedal: Shape {
     func path(in rect: CGRect) -> Path {
         Path { p in
@@ -162,7 +162,7 @@ struct BrakePedal: Shape {
     }
 }
 
-///The element of `BrakePedalView`
+///The element of ``BrakePedalView``
 struct BrakeLines: Shape {
     func path(in rect: CGRect) -> Path {
         Path { path in
@@ -215,7 +215,7 @@ struct BrakePedalView: View {
     }
 }
 
-///The element of `TransmissionView`
+///The element of ``TransmissionView``
 struct CircleWithLetter: View {
     
     public let color: Color
@@ -296,7 +296,7 @@ struct SpeedometerView: View {
                     )
             )
             .overlay(
-                Text("\(Int(car.speed))\nmph")
+                Text("\(Int(car.speed))")
                     .font(.title)
                     .fontWeight(.bold)
                     .foregroundColor(Color.white)

@@ -8,7 +8,7 @@
 import SwiftUI
 import AVKit
 
-///`ContentView` is the main View that returns `CameraView` and `CarControlView` or `ConnectView` if client isn't connected
+///`ContentView` is the main View that returns ``CameraView`` and ``CarControlView`` or ``ConnectView`` if client isn't connected
 struct ContentView: View {
     @State private var host = "172.20.10.4"
     @State private var port = "25565"

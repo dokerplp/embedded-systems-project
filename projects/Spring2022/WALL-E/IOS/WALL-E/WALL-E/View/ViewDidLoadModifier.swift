@@ -8,6 +8,8 @@
 import Foundation
 import SwiftUI
 
+
+///This modifier allows to run some code when view is loaded
 struct ViewDidLoadModifier: ViewModifier {
     
     @State private var didLoad = false

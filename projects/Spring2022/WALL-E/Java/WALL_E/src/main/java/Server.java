@@ -30,7 +30,7 @@ public class Server {
 
                     long battery1 = Math.round(Math.random() * 100);
                     long battery2 = Math.round(Math.random() * 100);
-                    String msg = battery1 + " " + battery2;
+                    String msg = battery1 + "-" + battery2 + "\n";
 
                     outStream.write(msg.getBytes(StandardCharsets.UTF_8));
                     outStream.flush();

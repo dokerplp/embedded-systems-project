@@ -11,7 +11,7 @@ import simd
 
 
 
-/// Allows `WheelView`  to turn and send data
+/// Allows  to turn``WheelView``  and set car direction
 struct ActionWheelView: View {
     
     @Binding public var client: Client
@@ -20,6 +20,14 @@ struct ActionWheelView: View {
     
     @State private var viewState = CGSize.zero
     
+    
+    /// This function calculates rotation of the wheel
+    /// - Parameters:
+    ///   - sx: start coordinate of X
+    ///   - sy: start coordinate of Y
+    ///   - x: end coordinate of X
+    ///   - y: end coordinate of Y
+    /// - Returns: Degrees of rotate
     func calcRotate(sx: Double, sy: Double, x: Double, y: Double) -> Double {
         let _x = x - ControlViewConstants.BORDER_SIZE / 2
         let _y = y - ControlViewConstants.BORDER_SIZE / 2
@@ -41,6 +49,12 @@ struct ActionWheelView: View {
         }
     }
     
+    /// This function calculates car direction
+    /// - Parameters:
+    ///   - sx: start coordinate of X
+    ///   - sy: start coordinate of Y
+    ///   - x: end coordinate of X
+    ///   - y: end coordinate of Y
     func setDirection(sx: Double, sy: Double, x: Double, y: Double) {
         let rotate = calcRotate(sx: sx, sy: sy, x: x, y: y)
         if (rotate >= -100 && rotate <= 100) {
@@ -67,6 +81,7 @@ struct ActionWheelView: View {
     }
 }
 
+/// Transmission panel
 struct ActionTransmissionView: View {
     
     @Binding public var car: Car
@@ -134,12 +149,16 @@ struct ActionTransmissionView: View {
     }
 }
 
+///This struct changes speed of car
 struct ActionPedalsView: View {
     
     @Binding public var car: Car
     @State private var timer: Timer?
     @State private var isLongPressing = false
     
+    
+    /// Changing speed with time interval
+    /// - Parameter i: delta
     func changeSpeed(i: Int) {
         if (car.transmission != .parking) {
             self.isLongPressing = true
@@ -169,7 +188,7 @@ struct ActionPedalsView: View {
                     LongPressGesture()
                         .onEnded { _ in
                             if (!isLongPressing) {
-                                changeSpeed(i: -10)
+                                changeSpeed(i: -15)
                             }
                         })
             }
@@ -190,7 +209,7 @@ struct ActionPedalsView: View {
                     LongPressGesture()
                         .onEnded { _ in
                             if (!isLongPressing) {
-                                changeSpeed(i: 3)
+                                changeSpeed(i: 10)
                             }
                         })
             }
@@ -199,6 +218,7 @@ struct ActionPedalsView: View {
     }
 }
 
+///This struct shows actual speed of car
 struct ActionSpeedometerView: View {
     
     @Binding var car: Car
@@ -210,6 +230,7 @@ struct ActionSpeedometerView: View {
     }
 }
 
+///This struct shows actual charge of batteries
 struct ActionBatteryView: View {
     
     @Binding public var settings: Settings
@@ -221,6 +242,7 @@ struct ActionBatteryView: View {
     
 }
 
+///Main Car UI
 struct CarControlView: View {
     
     @Binding public var client: Client
@@ -254,7 +276,7 @@ struct CarControlView: View {
         }
         .onLoad {
             self.decreaseTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { _ in
-                let s = car.speed - 1
+                let s = car.speed - 5
                 let speed = s > car.getMaxSpeed() ? car.getMaxSpeed() : s < 0 ? 0 : s
                 car.speed = speed
             })

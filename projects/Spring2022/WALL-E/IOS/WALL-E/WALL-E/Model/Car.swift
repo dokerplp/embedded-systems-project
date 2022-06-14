@@ -20,14 +20,21 @@ struct Car {
     /// if speed is less than 0 then car goes back
     /// otherwise car goes forward
     public var speed: Double = 0
+    ///Car transmission
+    ///
+    ///the transmission determines the speed and direction of the car
     public var transmission: TransmissionView.TransmissionType = .drive1
     
+    
+    
+    /// Max speed for each transmission
+    /// - Returns: speed
     public func getMaxSpeed() -> Double {
         switch transmission {
         case .drive1:
-            return 50
+            return 30
         case .drive2:
-            return 70
+            return 65
         case .drive3:
             return 100
         case .reverse:

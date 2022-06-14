@@ -39,7 +39,7 @@ struct StickView: View {
     }
 }
 
-///This view send data to `Client` struct and makes drag animation
+///This view send data to ``Client`` struct and makes drag animation
 struct ActionStickView: View {
     @State var viewState = CGSize.zero
     

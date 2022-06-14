@@ -9,6 +9,8 @@ import Foundation
 import SwiftUI
 import WebKit
  
+
+///Allows to get camera's image
 struct CustomWebView: UIViewRepresentable {
  
     var url: String
