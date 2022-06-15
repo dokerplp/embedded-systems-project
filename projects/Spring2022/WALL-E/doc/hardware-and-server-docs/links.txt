@@ -1,0 +1,5 @@
+IP Camera Server - https://motion-project.github.io/motion_config.html
+PI4J - https://pi4j.com/
+PI4J Examples - https://github.com/Pi4J/pi4j-example-crowpi
+Raspberry Pi Pinout - https://pinout.xyz/
+Raspberry Pi OS - https://www.raspberrypi.com/software/
