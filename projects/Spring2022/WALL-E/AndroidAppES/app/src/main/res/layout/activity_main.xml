@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#A19E9E"
+    tools:context=".MainActivity">
+
+    <TableLayout
+        android:layout_width="402dp"
+        android:layout_height="275dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_medium"
+                android:text="Car host" />
+
+            <EditText
+                android:id="@+id/car_host_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:fontFamily="@font/roboto_medium"
+                android:inputType="text"
+                android:text="188.134.71.123:25565" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_medium"
+                android:text="Camera host" />
+
+            <EditText
+                android:id="@+id/camera_host_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:fontFamily="@font/roboto_medium"
+                android:inputType="text"
+                android:text="188.134.71.123" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_medium"
+                android:text="Front port" />
+
+            <EditText
+                android:id="@+id/camera_front"
+                android:layout_width="63dp"
+                android:layout_height="51dp"
+                android:ems="10"
+                android:fontFamily="@font/roboto_medium"
+                android:inputType="number"
+                android:text="8081" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_medium"
+                android:text="Back port" />
+
+            <EditText
+                android:id="@+id/camera_back"
+                android:layout_width="63dp"
+                android:layout_height="51dp"
+                android:ems="10"
+                android:fontFamily="@font/roboto_medium"
+                android:inputType="number"
+                android:text="8082" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="109dp"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/button"
+                android:layout_width="106dp"
+                android:layout_height="49dp"
+                android:backgroundTint="#8BC34A"
+                android:fontFamily="@font/roboto_medium"
+                android:text="Connect" />
+
+        </TableRow>
+    </TableLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
