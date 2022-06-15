@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 
+///The element of ``WheelView``
 struct CustomCircle: Shape {
     public let radius: Double
     
@@ -18,6 +19,7 @@ struct CustomCircle: Shape {
     }
 }
 
+///The element of ``WheelView``
 struct Triangle: Shape {
     func path(in rect: CGRect) -> Path {
         Path { path in
@@ -39,11 +41,12 @@ struct Triangle: Shape {
             path.addLine(to: CGPoint(x: rect.midX - s * 1.5, y: r * 0.9))
             path.addLine(to: CGPoint(x: rect.midX + s * 1.5, y: r * 0.9))
             path.addLine(to: CGPoint(x: rect.midX + s, y: rect.midY + s))
-        
+            
         }
     }
 }
 
+///Wheel for car control
 struct WheelView: View {
     var body: some View {
         ZStack {
@@ -53,15 +56,16 @@ struct WheelView: View {
             
             CustomCircle(radius: ControlViewConstants.MAX_RADIUS)
                 .stroke(Color("WheelBorder"), lineWidth: CarControlViewConstants.WHEEL_SIZE)
-
+            
             
             CustomCircle(radius: CarControlViewConstants.WHEEL_SIZE * 0.75)
                 .fill(Color("WheelBorder"))
-            }
+        }
         .frame(width: ControlViewConstants.BORDER_SIZE, height: ControlViewConstants.BORDER_SIZE)
     }
 }
 
+/// The element of ``GazPedalView``
 struct GazPedal: Shape {
     func path(in rect: CGRect) -> Path {
         Path { p in
@@ -90,6 +94,7 @@ struct GazPedal: Shape {
     }
 }
 
+/// The element of ``GazPedalView``
 struct GazLines: Shape {
     func path(in rect: CGRect) -> Path {
         Path { path in
@@ -111,21 +116,24 @@ struct GazLines: Shape {
     }
 }
 
+/// Gaz pedal - used for increasing car speed
 struct GazPedalView: View {
     
     var body: some View {
         ZStack {
             GazPedal()
                 .fill(Color("WheelBorder"))
-                .frame(width: ControlViewConstants.BORDER_SIZE * 0.5, height: ControlViewConstants.BORDER_SIZE * 0.3)
+                .frame(width: CarControlViewConstants.GAZ_PEDAL_WIDTH, height: CarControlViewConstants.GAZ_PEDAL_HEIGHT, alignment: .top)
+            
             GazLines()
-                .stroke(style: StrokeStyle(lineWidth: ControlViewConstants.BORDER_SIZE * 0.02, lineCap: .round))
+                .stroke(style: StrokeStyle(lineWidth: CarControlViewConstants.LINE_WIDTH, lineCap: .round))
                 .foregroundColor(Color("WheelTriangle"))
-                .frame(width: ControlViewConstants.BORDER_SIZE * 0.5, height: ControlViewConstants.BORDER_SIZE * 0.3)
+                .frame(width: CarControlViewConstants.GAZ_PEDAL_WIDTH, height: CarControlViewConstants.GAZ_PEDAL_HEIGHT, alignment: .top)
         }
     }
 }
 
+///The element of ``BrakePedalView``
 struct BrakePedal: Shape {
     func path(in rect: CGRect) -> Path {
         Path { p in
@@ -154,6 +162,7 @@ struct BrakePedal: Shape {
     }
 }
 
+///The element of ``BrakePedalView``
 struct BrakeLines: Shape {
     func path(in rect: CGRect) -> Path {
         Path { path in
@@ -190,39 +199,45 @@ struct BrakeLines: Shape {
     }
 }
 
+/// Brake pedal - used for decreasing car speed
 struct BrakePedalView: View {
     var body: some View {
         ZStack {
             BrakePedal()
                 .fill(Color("WheelBorder"))
-                .frame(width: ControlViewConstants.BORDER_SIZE * 0.5, height: ControlViewConstants.BORDER_SIZE * 0.53)
+                .frame(width: CarControlViewConstants.BREAK_PEDAL_WIDTH, height: CarControlViewConstants.BREAK_PEDAL_HEIGHT)
             BrakeLines()
-                .stroke(style: StrokeStyle(lineWidth: ControlViewConstants.BORDER_SIZE * 0.02, lineCap: .round))
+                .stroke(style: StrokeStyle(lineWidth: CarControlViewConstants.LINE_WIDTH, lineCap: .round))
                 .foregroundColor(Color("WheelTriangle"))
-                .frame(width: ControlViewConstants.BORDER_SIZE * 0.5, height: ControlViewConstants.BORDER_SIZE * 0.53)
+                .frame(width: CarControlViewConstants.BREAK_PEDAL_WIDTH, height: CarControlViewConstants.BREAK_PEDAL_HEIGHT)
             
         }
     }
 }
 
+///The element of ``TransmissionView``
 struct CircleWithLetter: View {
     
     public let color: Color
     public let letter: String
     
+    public var transmission: TransmissionView.TransmissionType
+    
+    @Binding public var car: Car
+    
     var body: some View {
-            
+        
         Circle()
             .fill(color)
             .overlay(
                 Circle()
                     .stroke(lineWidth: 5)
                     .fill(
-                        Color("BorderStick")
+                        Color(transmission == car.transmission ? "Black" : "Gray")
                     ).overlay(
                         Text(letter)
-                            .font(.largeTitle)
-                            .fontWeight(.black)
+                            .font(.title)
+                            .fontWeight(.bold)
                             .foregroundColor(Color.white)
                     )
             )
@@ -230,38 +245,43 @@ struct CircleWithLetter: View {
     }
 }
 
+
+/// Shows car transmission
 struct TransmissionView: View {
     
-    @Binding public var transmission: TransmissionType
+    @Binding public var car: Car
     
     struct TransmissionType: OptionSet {
         let rawValue: Int
         
-        static let drive = TransmissionType(rawValue: 1)
-        static let reverse = TransmissionType(rawValue: 2)
-        static let parking = TransmissionType(rawValue: 3)
-
-        static let all: TransmissionType = [.drive, .parking, .reverse]
+        static let drive1 = TransmissionType(rawValue: 1)
+        static let drive2 = TransmissionType(rawValue: 2)
+        static let drive3 = TransmissionType(rawValue: 3)
+        static let reverse = TransmissionType(rawValue: 4)
+        static let parking = TransmissionType(rawValue: 5)
+        
+        static let all: TransmissionType = [.drive1, .parking, .reverse]
     }
     
     var body: some View {
         VStack {
-            switch transmission {
-            case .drive:
-                CircleWithLetter(color: .green, letter: "D")
+            switch car.transmission {
+            case .drive1:
+                CircleWithLetter(color: .green, letter: "D", transmission: .drive1, car: $car)
             case .reverse:
-                CircleWithLetter(color: .red, letter: "R")
+                CircleWithLetter(color: .red, letter: "R", transmission: .reverse, car: $car)
             default:
-                CircleWithLetter(color: .blue, letter: "P")
+                CircleWithLetter(color: .blue, letter: "P", transmission: .parking, car: $car)
             }
         }
         .frame(width: CarControlViewConstants.TRANSMISSION_SIZE, height: CarControlViewConstants.TRANSMISSION_SIZE)
     }
 }
 
+/// Speedometer
 struct SpeedometerView: View {
     
-    @Binding var speed: Double
+    @Binding var car: Car
     
     var body: some View {
         Circle()
@@ -270,15 +290,15 @@ struct SpeedometerView: View {
             )
             .overlay(
                 Circle()
-                    .stroke(lineWidth: 10)
+                    .stroke(lineWidth: 5)
                     .fill(
                         Color("WheelBorder")
                     )
             )
             .overlay(
-                Text("\(Int(speed))\nmph")
-                    .font(.largeTitle)
-                    .fontWeight(.heavy)
+                Text("\(Int(car.speed))")
+                    .font(.title)
+                    .fontWeight(.bold)
                     .foregroundColor(Color.white)
                     .multilineTextAlignment(.center)
             )
