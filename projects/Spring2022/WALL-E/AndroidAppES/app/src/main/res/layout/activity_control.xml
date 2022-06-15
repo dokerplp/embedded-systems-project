@@ -12,7 +12,7 @@
         android:id="@+id/camera_fail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="Camera fail"
+        android:contentDescription="@string/cam_descr"
         android:src="@drawable/camera_fail_foreground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -46,10 +46,11 @@
         android:layout_height="97dp"
         android:hapticFeedbackEnabled="true"
         android:indeterminate="false"
-        android:max="80"
+        android:max="0"
         android:progress="0"
-        android:progressTint="#4CAF50"
+        android:progressTint="#F44336"
         android:rotation="-90"
+        android:thumbTint="#4CAF50"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.923"
@@ -65,8 +66,9 @@
         android:indeterminate="false"
         android:max="100"
         android:progress="50"
-        android:progressTint="#FF9800"
+        android:progressTint="#00FF9800"
         android:rotation="0"
+        android:thumbTint="#FF9800"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.064"
@@ -76,26 +78,30 @@
 
     <Button
         android:id="@+id/camera_button"
-        android:layout_width="77dp"
-        android:layout_height="54dp"
-        android:fontFamily="sans-serif-medium"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="@drawable/round_button"
+        android:drawableTop="@drawable/cameraswitch"
+        android:fontFamily="@font/roboto_medium"
         android:hapticFeedbackEnabled="true"
-        android:text="Change view"
+        android:padding="8dp"
+        android:text="@string/change_view"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.046"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.041" />
+        app:layout_constraintVertical_bias="0.347" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="62dp"
         android:layout_height="307dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.967"
+        app:layout_constraintHorizontal_bias="0.98"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.153">
+        app:layout_constraintVertical_bias="0.48">
 
         <TableLayout
             android:id="@+id/transmissionTable"
@@ -116,8 +122,9 @@
                     android:layout_height="52dp"
                     android:layout_marginTop="6dp"
                     android:background="#FF9800"
+                    android:fontFamily="@font/roboto_medium"
                     android:gravity="center"
-                    android:text="D3"
+                    android:text="@string/d3"
                     android:textColor="#000000"
                     android:textStyle="bold" />
             </TableRow>
@@ -132,8 +139,9 @@
                     android:layout_height="52dp"
                     android:layout_marginTop="6dp"
                     android:background="#FFEB3B"
+                    android:fontFamily="@font/roboto_medium"
                     android:gravity="center"
-                    android:text="D2"
+                    android:text="@string/d2"
                     android:textColor="#000000"
                     android:textStyle="bold" />
             </TableRow>
@@ -148,10 +156,12 @@
                     android:layout_height="52dp"
                     android:layout_marginTop="6dp"
                     android:background="#4CAF50"
+                    android:fontFamily="@font/roboto_medium"
                     android:gravity="center"
-                    android:text="D1"
+                    android:text="@string/d1"
                     android:textColor="#000000"
                     android:textStyle="bold" />
+
             </TableRow>
 
             <TableRow
@@ -164,8 +174,9 @@
                     android:layout_height="52dp"
                     android:layout_marginTop="6dp"
                     android:background="#F44336"
+                    android:fontFamily="@font/roboto_medium"
                     android:gravity="center"
-                    android:text="R"
+                    android:text="@string/r"
                     android:textColor="#000000"
                     android:textStyle="bold" />
             </TableRow>
@@ -180,8 +191,9 @@
                     android:layout_height="52dp"
                     android:layout_marginTop="6dp"
                     android:background="#00BCD4"
+                    android:fontFamily="@font/roboto_medium"
                     android:gravity="center"
-                    android:text="P"
+                    android:text="@string/p"
                     android:textColor="#000000"
                     android:textStyle="bold" />
             </TableRow>
@@ -207,6 +219,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="96dp"
         android:layout_height="56dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.033"
@@ -240,28 +253,110 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.871" />
 
-        <TextView
-            android:id="@+id/engine_battery_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#000000"
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="139dp"
+        android:layout_height="121dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/batteryEngineImage"
+            android:layout_width="130dp"
+            android:layout_height="95dp"
+            android:layout_marginBottom="46dp"
+            android:contentDescription="@string/bat_descr"
+            android:rotation="90"
+            android:src="@drawable/battery"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.781"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/engine_battery_text"
+            android:layout_width="57dp"
+            android:layout_height="38dp"
+            android:layout_marginStart="55dp"
+            android:layout_marginTop="38dp"
+            android:layout_marginEnd="55dp"
+            android:layout_marginBottom="43dp"
+            android:fontFamily="@font/roboto_medium"
+            android:textColor="#000000"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="@+id/batteryEngineImage"
+            app:layout_constraintEnd_toEndOf="@+id/batteryEngineImage"
+            app:layout_constraintHorizontal_bias="0.594"
+            app:layout_constraintStart_toStartOf="@+id/batteryEngineImage"
+            app:layout_constraintTop_toTopOf="@+id/batteryEngineImage"
+            app:layout_constraintVertical_bias="0.39" />
+
+        <ImageView
+            android:id="@+id/batteryRpiImage"
+            android:layout_width="130dp"
+            android:layout_height="95dp"
+            android:layout_marginTop="30dp"
+            android:contentDescription="@string/bat_descr"
+            android:rotation="90"
+            android:src="@drawable/battery"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.78"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.175" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/rpi_battery_text"
+            android:layout_width="57dp"
+            android:layout_height="38dp"
+            android:layout_marginStart="55dp"
+            android:layout_marginTop="38dp"
+            android:layout_marginEnd="55dp"
+            android:layout_marginBottom="43dp"
+            android:fontFamily="@font/roboto_medium"
+            android:textColor="#000000"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="@+id/batteryRpiImage"
+            app:layout_constraintEnd_toEndOf="@+id/batteryRpiImage"
+            app:layout_constraintHorizontal_bias="0.594"
+            app:layout_constraintStart_toStartOf="@+id/batteryRpiImage"
+            app:layout_constraintTop_toTopOf="@+id/batteryRpiImage"
+            app:layout_constraintVertical_bias="0.42000002" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="192dp"
+        android:layout_height="98dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.499"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <com.cardiomood.android.controls.gauge.SpeedometerGauge
+            android:id="@+id/speedometer"
+            android:layout_width="231dp"
+            android:layout_height="179dp"
+            android:padding="1dp"
+            android:rotation="180"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/speed_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#000000"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.85" />
-
+            app:layout_constraintVertical_bias="0.25" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

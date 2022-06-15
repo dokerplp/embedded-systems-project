@@ -3,10 +3,10 @@ package ru.zavar.carcontroller;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,10 +22,10 @@ import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
-import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
+
+import com.cardiomood.android.controls.gauge.SpeedometerGauge;
 
 public class ControlActivity extends Activity {
 
@@ -39,7 +39,7 @@ public class ControlActivity extends Activity {
     private ConstraintLayout mainLayout;
 
     private String getCameraData(String host, String port) {
-        return "<style>img{display: block; background-color: hsl(0, 0%, 25%); height: auto; max-width: 65%;margin-left: auto;margin-right: auto}</style>" + "<img src=\"http://" + host + ":" + port + "/\" width=\"1024\" height=\"720\">";
+        return "<style>img{display: block; background-color: hsl(0, 0%, 25%); height: auto; max-width: 65%;margin-left: auto;margin-right: auto}</style>" + "<img src=\"http://" + host + ":" + port + "/\" width=\"1280\" height=\"720\">";
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -100,21 +100,35 @@ public class ControlActivity extends Activity {
                 switchToBackCamera();
         });
 
+        SpeedometerGauge speedometer = (SpeedometerGauge) findViewById(R.id.speedometer);
+        TextView textView = findViewById(R.id.speed_text);
+        textView.setText("0");
+
+        speedometer.setMaxSpeed(100);
+        speedometer.setMajorTickStep(30);
+        speedometer.setMinorTicks(2);
+
+        speedometer.addColoredRange(0, 50, Color.GREEN);
+        speedometer.addColoredRange(50, 70, Color.YELLOW);
+        speedometer.addColoredRange(70, 100, Color.RED);
 
         SeekBar gas = findViewById(R.id.gas);
         gas.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 tcpClient.setGas(progress);
+                speedometer.setSpeed(progress);
+                textView.setText(String.valueOf(progress));
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
+                seekBar.animate().alpha(0.5F);
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                seekBar.animate().alpha(1.0F);
                 gas.setProgress(0);
                 tcpClient.setGas(0);
                 gas.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK);
@@ -134,12 +148,13 @@ public class ControlActivity extends Activity {
         textD2.setBackgroundColor(Color.GRAY);
         textD3.setBackgroundColor(Color.GRAY);
         transmission.setProgress(0);
+
         transmission.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 switch (progress) {
                     case 0:
-                        gas.setMax(100);
+                        gas.setMax(0);
                         tcpClient.setTransmissionMode(TransmissionMode.PARK);
                         textP.setBackgroundColor(Color.CYAN);
                         textR.setBackgroundColor(Color.GRAY);
@@ -219,29 +234,44 @@ public class ControlActivity extends Activity {
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
+                seekBar.animate().alpha(0.5F);
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                seekBar.animate().alpha(1.0F);
                 rotation.setProgress(50);
                 tcpClient.setRotation(50);
                 rotation.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK);
             }
         });
 
-        ProgressBar engineBattery = findViewById(R.id.engine_battery);
-        ProgressBar rpiBattery = findViewById(R.id.rpi_battery);
         TextView engineBatteryText = findViewById(R.id.engine_battery_text);
         TextView rpiBatteryText = findViewById(R.id.rpi_battery_text);
+        ImageView batteryEngineImage = findViewById(R.id.batteryEngineImage);
+        ImageView batteryRpiImage = findViewById(R.id.batteryRpiImage);
 
         tcpClient.setOnEngineBatteryChange(value -> handler.post(() -> {
-            engineBattery.setProgress(value);
             engineBatteryText.setText(String.valueOf(value));
+
+            if(value > 60 && value <= 100) {
+                batteryEngineImage.setColorFilter(Color.GREEN);
+            } else if(value > 20 && value <= 60) {
+                batteryEngineImage.setColorFilter(Color.YELLOW);
+            } else if(value <= 20) {
+                batteryEngineImage.setColorFilter(Color.RED);
+            }
         }));
         tcpClient.setOnRpiBatteryChange(value -> handler.post(() -> {
-            rpiBattery.setProgress(value);
             rpiBatteryText.setText(String.valueOf(value));
+
+            if(value > 60 && value <= 100) {
+                batteryRpiImage.setColorFilter(Color.GREEN);
+            } else if(value > 20 && value <= 60) {
+                batteryRpiImage.setColorFilter(Color.YELLOW);
+            } else if(value <= 20) {
+                batteryRpiImage.setColorFilter(Color.RED);
+            }
         }));
 
         tcpClient.setOnStop(message -> handler.post(() -> {
@@ -251,9 +281,7 @@ public class ControlActivity extends Activity {
                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
         }));
 
-        tcpClient.setOnConnect(() -> {
-            mainLayout.animate().translationY(0).alpha(1.0f).setDuration(1000);
-        });
+        tcpClient.setOnConnect(() -> mainLayout.animate().translationY(0).alpha(1.0f).setDuration(1000));
 
         tcpClient.start();
     }
