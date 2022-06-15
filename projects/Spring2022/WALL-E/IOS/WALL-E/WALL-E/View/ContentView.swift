@@ -26,7 +26,7 @@ struct ContentView: View {
             Color.black
                 .edgesIgnoringSafeArea(.all)
             if (client.isConnected()) {
-                CameraView(camera: $camera, fcamera: $fcamera, bcamera: $bcamera)
+//                CameraView(camera: $camera, fcamera: $fcamera, bcamera: $bcamera)
                 CarControlView(client: $client, car: $car, settings: $settings, camera: $camera)
             } else {
                 ConnectView(client: $client, host: $host, port: $port, fcamera: $fcamera, bcamera: $bcamera)
