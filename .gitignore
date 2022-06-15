@@ -184,3 +184,4 @@ dkms.conf
 /projects/Spring2022/WALL-E/RPiServer/target/
 /projects/Spring2022/WALL-E/AndroidAppES/.idea/
 /projects/Spring2022/WALL-E/AndroidAppES/.gradle/
+*.log
