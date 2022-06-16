@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 
+///Stick border
 struct BorderView: View {
     var body: some View {
         ZStack {
@@ -21,12 +22,13 @@ struct BorderView: View {
                 .fill(
                     Color("BorderStick")
                 )
-            .frame(width: ControlViewConstants.BORDER_SIZE, height: ControlViewConstants.BORDER_SIZE)
+                .frame(width: ControlViewConstants.BORDER_SIZE, height: ControlViewConstants.BORDER_SIZE)
         }
         .padding()
     }
 }
 
+///Stick
 struct StickView: View {
     var body: some View {
         Circle()
@@ -37,9 +39,10 @@ struct StickView: View {
     }
 }
 
+///This view send data to ``Client`` struct and makes drag animation
 struct ActionStickView: View {
     @State var viewState = CGSize.zero
-
+    
     @Binding var client: Client
     @Binding var car: Car
     @Binding var settings: Settings
@@ -55,12 +58,12 @@ struct ActionStickView: View {
         d = d < ControlViewConstants.MAX_RADIUS ? d : ControlViewConstants.MAX_RADIUS
         let w = d * sin(angle)
         let h = d * cos(angle)
-
+        
         viewState = CGSize (width: w, height: h)
         
         car.setParam(x: w, y: -h)
         
-        guard let power = client.write(dir: car.getDirection(), speed: car.getSpeed()) else { return }
+        guard let power = client.write(dir: car.direction, speed: car.speed) else { return }
         let batteries = power.components(separatedBy: " ")
         let charge1 = getPower(charge: batteries[0])
         let charge2 = getPower(charge: batteries[1])
@@ -81,11 +84,11 @@ struct ActionStickView: View {
                             onChanged(w: value.translation.width, h: value.translation.height)
                         }
                     }
-                    .onEnded { value in
-                        withAnimation(.spring()) {
-                            viewState = .zero
+                        .onEnded { value in
+                            withAnimation(.spring()) {
+                                viewState = .zero
+                            }
                         }
-                    }
                 )
         }
     }

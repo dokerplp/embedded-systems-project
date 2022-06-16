@@ -8,15 +8,17 @@
 import Foundation
 import SwiftUI
 
-struct ViewDidLoadModifier: ViewModifier {
 
+///This modifier allows to run some code when view is loaded
+struct ViewDidLoadModifier: ViewModifier {
+    
     @State private var didLoad = false
     private let action: (() -> Void)?
-
+    
     init(perform action: (() -> Void)? = nil) {
         self.action = action
     }
-
+    
     func body(content: Content) -> some View {
         content.onAppear {
             if didLoad == false {
@@ -25,13 +27,13 @@ struct ViewDidLoadModifier: ViewModifier {
             }
         }
     }
-
+    
 }
 
 extension View {
-
+    
     func onLoad(perform action: (() -> Void)? = nil) -> some View {
         modifier(ViewDidLoadModifier(perform: action))
     }
-
+    
 }

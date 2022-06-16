@@ -7,11 +7,13 @@
 
 import SwiftUI
 
+///`ControlView` is the stick control for car
+/// - Remark: now deprecarted
 struct ControlView: View {
     @Binding public var client: Client
     @Binding public var car: Car
     @Binding public var settings: Settings
-        
+    
     var body: some View {
         HStack {
             VStack {

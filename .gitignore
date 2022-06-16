@@ -178,3 +178,10 @@ dkms.conf
 *.exe
 *.out
 *.app
+.idea
+/projects/Spring2022/WALL-E/RPiServer/.idea/
+/projects/Spring2022/WALL-E/RPiServer/logs/
+/projects/Spring2022/WALL-E/RPiServer/target/
+/projects/Spring2022/WALL-E/AndroidAppES/.idea/
+/projects/Spring2022/WALL-E/AndroidAppES/.gradle/
+*.log

@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 
+///View for one battery
 struct OneBatteryView: View {
     
     @Binding public var battery: Int32
@@ -31,6 +32,7 @@ struct OneBatteryView: View {
     }
 }
 
+///Shows car charge
 struct BatteryView: View {
     @Binding public var settings: Settings
     
@@ -39,6 +41,6 @@ struct BatteryView: View {
             OneBatteryView(battery: $settings.battery1)
             OneBatteryView(battery: $settings.battery2)
         }
-    
+        
     }
 }
