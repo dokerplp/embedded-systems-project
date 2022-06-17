@@ -8,28 +8,45 @@
 import SwiftUI
 import AVKit
 
+///`ContentView` is the main View that returns ``CameraView`` and ``CarControlView`` or ``ConnectView`` if client isn't connected
 struct ContentView: View {
+    @State private var host = "172.20.10.4"
+    @State private var port = "25565"
     
-    @State var player = AVPlayer()
-    let videoUrl: String = "https://vkvd148.mycdn.me/video.m3u8?cmd=videoPlayerCdn&expires=1651239686613&srcIp=188.243.183.252&srcAg=SAFARI_MAC&ms=45.136.21.150&mid=1399293093983&type=4&sig=RbgEKwruQQE&ct=8&urls=185.226.53.204&clientType=13&id=665679628895"
+    @State private var camera: Camera = .front
+    @State private var fcamera: String = "http://172.20.10.4:8081"
+    @State private var bcamera: String = "http://172.20.10.4:8082"
     
-    var client: Client
-    @State var car: Car
-    init () {
-        self.client = Client()
-        self.car = Car(client: self.client)
-        
-        client.connect()
-    }
-    
+    @State private var client: Client = Client()
+    @State private var car: Car = Car()
+    @State private var settings: Settings = Settings()
     
     var body: some View {
         ZStack {
-            VideoPlayer(player: player)
-                            .onAppear() {
-                                    player = AVPlayer(url: URL(string: videoUrl)!)
-                            }
-            ControlVIew(car: $car)
+            Color.black
+                .edgesIgnoringSafeArea(.all)
+            if (client.isConnected()) {
+//                CameraView(camera: $camera, fcamera: $fcamera, bcamera: $bcamera)
+                CarControlView(client: $client, car: $car, settings: $settings, camera: $camera)
+            } else {
+                ConnectView(client: $client, host: $host, port: $port, fcamera: $fcamera, bcamera: $bcamera)
+            }
+        }
+        .onAppear {
+            UIDevice.current.setValue(UIInterfaceOrientation.landscapeLeft.rawValue, forKey: "orientation") // Forcing the rotation to portrait
+            AppDelegate.orientationLock = .landscape // And making sure it stays that way
+            
+            DispatchQueue.global(qos: .background).async {
+                while true {
+                    if client.isConnected() {
+                        let speed = car.transmission == .reverse ? -car.speed: car.speed
+                        guard let power = client.write(dir: car.direction, speed: speed) else {continue}
+                        settings.setCharge(charge: power)
+                    }
+                }
+            }
+        }.onDisappear {
+            AppDelegate.orientationLock = .all // Unlocking the rotation when leaving the view
         }
     }
 }

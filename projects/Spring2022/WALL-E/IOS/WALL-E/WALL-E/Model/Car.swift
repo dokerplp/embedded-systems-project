@@ -7,35 +7,51 @@
 
 import Foundation
 
+///`Car` is the struct that keeps car data - direction and speed
 struct Car {
     
-    private var client: Client
+    /// Car direction
+    ///
+    /// if direction is less than 0 then car goes left
+    /// otherwise car goes right
+    public var direction: Double = 0
+    /// Car speed
+    ///
+    /// if speed is less than 0 then car goes back
+    /// otherwise car goes forward
+    public var speed: Double = 0
+    ///Car transmission
+    ///
+    ///the transmission determines the speed and direction of the car
+    public var transmission: TransmissionView.TransmissionType = .drive1
     
-    private var direction: Double
-    private var speed: Double
     
-    private var counter = 0
-    mutating func isGo() -> Bool {
-        counter = (counter + 1) % 5
-        return counter == 0
+    
+    /// Max speed for each transmission
+    /// - Returns: speed
+    public func getMaxSpeed() -> Double {
+        switch transmission {
+        case .drive1:
+            return 30
+        case .drive2:
+            return 65
+        case .drive3:
+            return 100
+        case .reverse:
+            return 100
+        case .parking:
+            return 10
+        default:
+            return 0
+        }
     }
     
-    public init(client: Client) {
-        
-        self.client = client
-        
-        self.direction = 0
-        self.speed = 0
-    }
     
-    public func getDirection() -> Double {
-        return direction
-    }
-    
-    public func getSpeed() -> Double {
-        return speed
-    }
-    
+    @available(*, deprecated, message: "Use setCarParam instead")
+    /// Car params setter
+    /// - Parameters:
+    ///   - x: direction
+    ///   - y: speed
     mutating public func setParam(x: Double, y: Double) {
         let _x = x / ControlViewConstants.MAX_RADIUS
         let _y = y / ControlViewConstants.MAX_RADIUS
@@ -43,18 +59,5 @@ struct Car {
         self.speed = sqrt(_x * _x + _y * _y)
         self.direction = _x
     }
-    
-    mutating public func go(x: Double, y: Double) {
-        setParam(x: x, y: y)
-        
-        if (isGo()) {
-            client.write(dir: direction, speed: speed)
-        }
-    }
-    
-    public func brake(force: Double) {
-        
-    }
-    
     
 }
