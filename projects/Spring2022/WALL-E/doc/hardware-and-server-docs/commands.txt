@@ -4,6 +4,7 @@ sudo systemctl stop motion - остановка motion
 sudo ./launch - запуск сервера из ~
 ps aux | grep java - посмотреть все java процессы
 kill -9 <pid> - убить процесс с данным pid
+cd /etc/motion - перейти в каталог с конфигом motion
 
 -----------
 Порт сервера - 25565
